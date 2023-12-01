@@ -60,7 +60,11 @@ int main()
     {
         a[i] = i;
     }
-    unsigned int found = binary_search(a, size, random_integer);
-    std::cout << "found: " << found << std::endl;
+    unsigned int found;
+    found = binary_search(a, size, random_integer);
+    std::cout << "binary_search for " << random_integer << " found: " << found << std::endl;
+    random_integer = -5;
+    found = binary_search(a, size, random_integer);
+    std::cout << "binary_search for " << random_integer << " found: " << found << std::endl;
     return 0;
 }
