@@ -42,7 +42,7 @@ int main()
     for (int row = 0; row < ROWS; ++row)
     {
         int sum = 0;
-        for (int col = 0; col < COLS; ++col)
+        for (int col = 0; col < COLS-1; ++col)
         {
             sum += spreadsheet[row][col];
         }
@@ -50,6 +50,7 @@ int main()
     }
 
     printSpreadsheet(spreadsheet);
+    std::cout << std::endl << sizeof(spreadsheet) << std::endl;
 
     return 0;
 }
