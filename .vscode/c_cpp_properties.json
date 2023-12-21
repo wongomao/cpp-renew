@@ -4,7 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\ProgramData\\mingw64\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\13.2.0\\include\\c++"
+                "C:\\ProgramData\\mingw64\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\13.2.0\\include\\c++",
+                "C:\\dv\\cpp\\cpp-renew\\asio-1.28.0\\include"
             ],
             "defines": [
                 "_DEBUG",
