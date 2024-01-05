@@ -1,0 +1,10 @@
+# https://makefiletutorial.com/
+main: main01.o
+	g++ -o main.exe main01.o -std=c++2a
+main01.o: main01.cpp
+	g++ -c main01.cpp -std=c++2a
+all: main01.o
+	g++ -o main01.exe main01.o -std=c++2a
+clean:
+	@echo "Cleaning main01..."
+	del -include *.o, *.exe
