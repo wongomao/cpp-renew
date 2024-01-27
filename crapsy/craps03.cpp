@@ -54,6 +54,53 @@ public:
 
 // =====================================================================================
 
+class Bet
+{
+private:
+    int amount;
+    std::string betType;
+    Table *table;
+    Player *player;
+public:
+    Bet(Table *t, Player *p, int amt, const std::string& type) :
+        table(t),
+        player(p),
+        amount(amt),
+        betType(type)
+        {}
+    std::string toString() const
+    {
+        return player->toString() + " bets $" + std::to_string(amount) + " on " + betType;
+    }
+    virtual void adjudicate(int die1, int die2, bool isComeOut, int point)
+    {
+        std::cout << "Adjudicating bet: " << toString() << std::endl;
+    }
+
+    void addToTable(int amount)
+    {
+        table->payTable(amount);
+    }
+
+    void payPlayer(int amount)
+    {
+        player->payPlayer(amount);
+    }
+};
+
+class PassLineBet : public Bet
+{
+public:
+    PassLineBet(Table *t, Player *p, int amt) : Bet(t, p, amt, "Pass Line") {}
+};
+
+class FieldBet : public Bet
+{
+public:
+    FieldBet(Table *t, Player *p, int amt) : Bet(t, p, amt, "Field") {}
+};
+
+// =====================================================================================
 
 class Table
 {
