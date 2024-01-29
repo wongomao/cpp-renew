@@ -10,7 +10,8 @@
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "-std=c++2b"
+                "-std=c++2b",
+                "-fmodules-ts"
             ],
             "options": {
                 "cwd": "${fileDirname}"
@@ -34,7 +35,8 @@
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "-std=c++2b"
+                "-std=c++2b",
+                "-fmodules-ts"
             ],
             "options": {
                 "cwd": "${fileDirname}"
