@@ -10,6 +10,7 @@ bool Is_Odd(int a)
 int main()
 {
     std::vector<int> vec = { 11, 24, 13, 64, 23, 36, 17, 31, 100 };
+    // remove_if returns an iterator to the end of the new sequence
     auto it = remove_if(vec.begin(), vec.end(), Is_Odd);
 
     for (auto i = vec.begin(); i != it; i++)

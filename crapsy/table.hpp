@@ -3,13 +3,15 @@
 #ifndef TABLE_HPP
 #define TABLE_HPP
 
-#include <vector>
+#include <list>
 #include <random>
 
 // forward declaration
 class Player;
 enum class BetType;
 class Bet;
+
+
 
 class Table
 {
@@ -18,8 +20,17 @@ private:
     std::random_device rd;
     std::mt19937 gen;
     std::uniform_int_distribution<> dis; // dis uses gen to generate random numbers
+    int point;
+    
     int die1, die2;
-    std::vector<Player *> *players; // pointer to a vector of pointers to Player objects
+    bool using_preroll;
+    int pre_roll_id;
+    void get_preroll(); // preset dice values for testing
+
+    // Table does not own the bets or the players
+    std::list<Player *> *players; // pointer to a list of pointers to Player objects
+    // using lists for removing bets and players ad hoc
+    std::list<Bet *> *bets; // pointer to a list of pointers to Bet objects
 
 public:
     // constructor-destructor
@@ -28,9 +39,12 @@ public:
     void addPlayer(Player *p);
     void removePlayer(Player *p);
     void showPlayers() const;
+    void showBets() const;
     void acceptBets();
-    Bet *acceptBet(Player *p, int amount, BetType betType);
+    void acceptBet(Bet *b);
     void roll();
+    void adjudicateBets();
+    void calculateNewPoint();
     void payTable(int amount);
 };
 

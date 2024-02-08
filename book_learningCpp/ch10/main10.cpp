@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <list>
 #include <string>
-#include <algorithm> // needed for std::remove_if
+#include <algorithm>
 
 // Notice that we cannot create an instance of an abstract class
 // due to the pure virtual method getGradeLevel()
@@ -65,23 +66,61 @@ public:
     }
 };
 
-int main()
+void showList(const std::list<Pupil*>& pupils)
 {
-    std::vector<Pupil*> pupils; // a collection of pointers to Pupil objects
-
-    pupils.push_back(new Kindergarten("Sally", 5));
-    pupils.push_back(new ELementarySchool("Thomas", 8, 3));
-    pupils.push_back(new MiddleSchool("Jane", 12, 7));
-
     for (const auto& pupil : pupils)
     {
         pupil->displayInfo();
     }
+}
 
-    for (const auto& pupil : pupils)
+// FunctionObject
+struct WeedOut
+{
+    bool operator()(Pupil* pupil) const
     {
-        delete pupil;
+        std::cout << "Checking " << pupil->getName() << std::endl;
+        bool alphaGreaterThanM = pupil->getName()[0] > 'M';
+        return alphaGreaterThanM;
     }
+};
+
+int main()
+{
+    std::list<Pupil*> pupils; // a collection of pointers to Pupil objects
+
+    auto* p1 = new Kindergarten("Sally", 5);
+    auto* p2 = new ELementarySchool("Thomas", 8, 3);
+    auto* p3 = new MiddleSchool("Jane", 12, 7);
+    auto* p4 = new MiddleSchool("Wentworth", 13, 8);
+    auto* p5 = new ELementarySchool("Amanda", 7, 2);
+
+    pupils.push_back(p1);
+    pupils.push_back(p2);
+    pupils.push_back(p3);
+    pupils.push_back(p4);
+    pupils.push_back(p5);
+    
+    showList(pupils);
+    // WeedOut functor
+    std::cout << "Weed out pupils whose name starts with a letter greater than M" << std::endl;
+    for (std::list<Pupil*>::iterator it = pupils.begin(); it != pupils.end();)
+    {
+        if (WeedOut()(*it))
+        {
+            auto pupil = *it;
+            std::cout << "Removing " << pupil->getName() << std::endl;
+            it = pupils.erase(it);
+        }
+        else
+        {
+            it++;
+        }
+    }
+    std::cout << "---------------------" << std::endl;
+    showList(pupils);
+
+
 
     return 0;
 }

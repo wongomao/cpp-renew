@@ -15,6 +15,12 @@ enum class BetType
     Field
 };
 
+enum class BetStatus
+{
+    On,
+    Off
+};
+
 class Bet
 {
 private:
@@ -23,11 +29,20 @@ public:
     Player *player;
     int amount;
     BetType betType;
+    BetStatus status;
+    bool active;
 
-    Bet(Table *t, Player *p, int amt, BetType type);
+    Bet(Player *p, int amt, BetType type);
+    virtual ~Bet() {};
     virtual std::string toString() const;
-    virtual void adjudicate(int die1, int die2, bool isComeOut, int point);
-    void addToTable(int amount);
+    void setTable(Table *t);
+    void setStatus(BetStatus s);
+    BetStatus getStatus() const;
+    void setActive(bool a);
+    bool getActive() const;
+    // return true if bet is to stay on the table, false if it is to be removed
+    virtual bool adjudicate(int die1, int die2, int point);
+    void payTable(int amount);
     void payPlayer(int amount);
 };
 
@@ -36,8 +51,9 @@ public:
 class PassBet : virtual public Bet
 {
 public:
-    PassBet(Table *t, Player *p, int amt);
+    PassBet(Player *p, int amt);
     std::string toString() const override;
+    bool adjudicate(int die1, int die2, int point) override;
 };
 
 // =====================================================================================
@@ -45,8 +61,11 @@ public:
 class FieldBet : virtual public Bet
 {
 public:
-    FieldBet(Table *t, Player *p, int amt);
+    FieldBet(Player *p, int amt);
     std::string toString() const override;
+    bool adjudicate(int die1, int die2, int point) override;
 };
+
+// =====================================================================================
 
 #endif // BET_HPP
