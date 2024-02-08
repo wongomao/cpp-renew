@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm> // needed for std::remove_if
 
 // Notice that we cannot create an instance of an abstract class
 // due to the pure virtual method getGradeLevel()
@@ -20,6 +21,10 @@ public:
         std::cout << "Age: " << age << std::endl;
         std::cout << "Grade Level: " << getGradeLevel() << std::endl;
         std::cout << std::endl;
+    }
+    std::string getName() const
+    {
+        return name;
     }
 };
 
@@ -63,6 +68,7 @@ public:
 int main()
 {
     std::vector<Pupil*> pupils; // a collection of pointers to Pupil objects
+
     pupils.push_back(new Kindergarten("Sally", 5));
     pupils.push_back(new ELementarySchool("Thomas", 8, 3));
     pupils.push_back(new MiddleSchool("Jane", 12, 7));

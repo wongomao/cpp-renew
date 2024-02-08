@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -std=c++2b
-OBJS = craps03.o table.o player.o bet.o
+OBJS = craps03.o table.o player.o bet.o logger.o
 
 craps: $(OBJS)
 	$(CC) -o craps.exe $(OBJS) $(CFLAGS)
@@ -13,6 +13,8 @@ player.o: player.cpp
 	$(CC) -c player.cpp $(CFLAGS)
 bet.o: bet.cpp
 	$(CC) -c bet.cpp $(CFLAGS)
+logger.o: logger.cpp
+	$(CC) -c logger.cpp $(CFLAGS)
 
 clean:
 	@echo "Cleaning all..."

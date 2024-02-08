@@ -5,17 +5,18 @@
 #include "player.hpp"
 #include "table.hpp"
 #include "bet.hpp"
+#include "logger.hpp"
 
 Player::Player(const std::string& n, int startMoney) :
     name(n),
-    money(startMoney),
-    playerType("generic")
+    money(startMoney)
 {
     bets = new std::vector<Bet *>;
 }
 
 Player::~Player()
 {
+    // std::cout << "Player destructor called" << std::endl;
     bets->clear();
     delete bets;
 }
@@ -25,9 +26,9 @@ std::string Player::toString() const
     return getPlayerType() + " player " + name + " has $" + std::to_string(money);
 }
 
-std::string Player::getPlayerType() const
+void Player::setTable(Table *t)
 {
-    return playerType;
+    table = t;
 }
 
 void Player::makeBets()
@@ -44,6 +45,11 @@ void Player::payPlayer(int amount)
 
 PassLinePlayer::PassLinePlayer(const std::string& n, int startMoney) : Player(n, startMoney) {}
 
+// PassLinePlayer::~PassLinePlayer()
+// {
+//     std::cout << "PassLinePlayer destructor called" << std::endl;
+// }
+
 std::string PassLinePlayer::getPlayerType() const
 {
     return "Pass Line";
@@ -51,13 +57,24 @@ std::string PassLinePlayer::getPlayerType() const
 
 void PassLinePlayer::makeBets()
 {
-    std::cout << name << " makes Pass Line bet" << std::endl;
-    //table->addBet(new PassLineBet(table, this, 5));
+    std::cout << "\t" << name << " makes Pass Line bet" << std::endl;
+    std::string msg = name + " makes Pass Line bet";
+    Logger::log(msg.c_str());
+    // create pass line bet and hand to table
+    auto bet = new PassBet(this, 5);
+    table->acceptBet(bet);
+    bets->push_back(bet); // add bet to player's list of bets; not owned by player
 }
 
 // =====================================================================================
 
 FieldPlayer::FieldPlayer(const std::string& n, int startMoney) : Player(n, startMoney) {}
+
+// FieldPlayer::~FieldPlayer()
+// {
+//     std::cout << "FieldPlayer destructor called" << std::endl;
+
+// }
 
 std::string FieldPlayer::getPlayerType() const
 {
@@ -66,8 +83,10 @@ std::string FieldPlayer::getPlayerType() const
 
 void FieldPlayer::makeBets()
 {
-    std::cout << name << " makes Field bet" << std::endl;
-    //table->addBet(new FieldBet(table, this, 5));
+    std::cout << "\t" << name << " makes Field bet" << std::endl;
+    auto bet = new FieldBet(this, 5);
+    table->acceptBet(bet);
+    bets->push_back(bet); // add bet to player's list of bets
 }
 
 // =====================================================================================
