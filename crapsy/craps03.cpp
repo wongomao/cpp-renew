@@ -1,8 +1,3 @@
-#include <iostream>
-#include <vector>
-#include <random>
-#include <string>
-#include <algorithm>
 #include "table.hpp"
 #include "player.hpp"
 #include "bet.hpp"
@@ -10,24 +5,29 @@
 
 // =====================================================================================
 
+#define ITERATIONS 2
 
 int main()
 {
-    Logger::log("Craps game starts");
-    Table *table = new Table();
+    Logger::log(Level::INFO, "----- Craps game starts -----");
 
-    PassLinePlayer *player1 = new PassLinePlayer("John", 1000);
+    Table *table = new Table();
+    table->setUsingPreroll(true);
+
+    PassLinePlayer *player1 = new PassLinePlayer("John", 1000, 5);
     table->addPlayer(player1);
 
-    FieldPlayer *player2 = new FieldPlayer("Jane", 2000);
+    FieldPlayer *player2 = new FieldPlayer("Jane", 2000, 5);
     table->addPlayer(player2);
 
-    table->acceptBets();
-    table->showBets();
-    table->roll();
+    for (int i = 0; i < ITERATIONS; i++)
+    {
+        table->acceptBets();
+        table->roll();
+        table->logBets(); // ---------------------
+    }
 
-    table->showPlayers();
-    table->showBets();
+    table->logPlayers(); // ---------------------
 
     delete player2;
     delete player1;

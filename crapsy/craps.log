@@ -1,5 +1,8 @@
-2024-02-07 13:27:56.277 Craps game starts
-2024-02-07 13:30:55.654 Craps game starts
-2024-02-07 13:30:55.659 John makes Pass Line bet
-2024-02-07 13:41:04.984 Craps game starts
-2024-02-07 13:41:04.992 John makes Pass Line bet
+2024-02-08 09:29:04.585[INFO] ----- Craps game starts -----
+2024-02-08 09:29:04.590[INFO] Adding player: Pass Line player John has $1000
+2024-02-08 09:29:04.590[INFO] Adding player: Field player Jane has $2000
+2024-02-08 09:29:04.590[INFO] 	John makes Pass Line bet of $5
+2024-02-08 09:29:04.591[INFO] Jane makes bets
+2024-02-08 09:29:04.591[INFO] 	Jane makes Field bet of $5
+2024-02-08 09:29:04.591[INFO] Rolled 1 and 1
+2024-02-08 09:29:04.592[INFO] Adjudicating bets

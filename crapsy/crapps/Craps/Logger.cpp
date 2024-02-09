@@ -1,16 +1,15 @@
 #include <chrono>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <iomanip>
-#include <format>
-#include "logger.hpp"
+#include "Logger.h"
 
-#define LOGFILENAME "craps.log"
+#define LOGFILENAME "runcraps.log"
 #define LOGLEVEL Level::INFO
 
-std::string formatTimestamp(const std::chrono::system_clock::time_point& now)
+std::string format_timestamp(const std::chrono::system_clock::time_point& now)
 {
     std::time_t t = std::chrono::system_clock::to_time_t(now);
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
@@ -52,9 +51,9 @@ void Logger::log(Level level, const char* message)
         std::cerr << "Error opening log file." << std::endl;
         return;
     }
-    
+
     const auto now = std::chrono::system_clock::now();
-    const std::string timestamp = formatTimestamp(now);
+    const std::string timestamp = format_timestamp(now);
     std::ostringstream output;
     output << timestamp << "[" << logLevelString(level) << "]" << " " << message << std::endl;
     logFile << output.str();

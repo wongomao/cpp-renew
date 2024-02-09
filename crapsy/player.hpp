@@ -14,13 +14,12 @@ private:
 public:
     std::string name;
     int money;
+    int baseBetAmount;
     Table *table;
-    std::vector<Bet *> *bets;
-    // note that each bet is not owned by the player, but by the table
-    // and a bet can be nullptr in this list
-    // nullptr will indicate that the bet can be removed from the list
+    std::list<Bet *> *bets;
+    // player owns the bets
 
-    Player(const std::string& n, int startMoney);
+    Player(const std::string& n, int startMoney, int baseBetAmount);
     virtual ~Player();
     std::string toString() const;
     virtual std::string getPlayerType() const = 0;
@@ -34,7 +33,7 @@ public:
 class PassLinePlayer : public Player
 {
 public:
-    PassLinePlayer(const std::string& n, int startMoney);
+    PassLinePlayer(const std::string& n, int startMoney, int baseBetAmount);
     // ~PassLinePlayer(); // destructor is not needed
     std::string getPlayerType() const override;
     void makeBets() override;
@@ -45,7 +44,7 @@ public:
 class FieldPlayer : public Player
 {
 public:
-    FieldPlayer(const std::string& n, int startMoney);
+    FieldPlayer(const std::string& n, int startMoney, int baseBetAmount);
     // ~FieldPlayer(); // destructor is not needed
     std::string getPlayerType() const override;
     void makeBets() override;
