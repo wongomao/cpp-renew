@@ -24,6 +24,7 @@ private:
     
     int die1, die2;
     bool using_preroll;
+    std::vector<std::pair<int, int>> preroll;
     int pre_roll_id;
     void get_preroll(); // preset dice values for testing
 
@@ -36,10 +37,11 @@ public:
     // constructor-destructor
     Table();
     ~Table();
+    void setUsingPreroll(bool b);
     void addPlayer(Player *p);
     void removePlayer(Player *p);
-    void showPlayers() const;
-    void showBets() const;
+    void logPlayers() const;
+    void logBets() const;
     void acceptBets();
     void acceptBet(Bet *b);
     void roll();

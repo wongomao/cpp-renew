@@ -4,15 +4,16 @@
 #include "table.hpp"
 #include "bet.hpp"
 #include "player.hpp"
+#include "logger.hpp"
 
 Table::Table() : bank(0), gen(rd()), dis(1, 6) // initialize random number generator
 {
     players = new std::list<Player *>(); // initialize players container
     bets = new std::list<Bet *>(); // initialize bets container
     point = 0;
-    using_preroll = true;
+    using_preroll = false;
+    preroll = {{1, 1}, {3, 4}, {6, 6}};
     pre_roll_id = 0;
-    std::cout << "Table constructor called; players: " << players << "; bets: " << bets << std::endl;
 }
 
 // destructor
@@ -26,9 +27,15 @@ Table::~Table()
     players = nullptr;
 }
 
+void Table::setUsingPreroll(bool b)
+{
+    using_preroll = b;
+}
+
 void Table::addPlayer(Player *p)
 {
-    std::cout << "Adding player: " << p->toString() << std::endl;
+    std::string logMsg = "Adding player: " + p->toString();
+    Logger::log(Level::INFO, logMsg.c_str());
     players->push_back(p);
     p->setTable(this);
 }
@@ -38,22 +45,24 @@ void Table::removePlayer(Player *p)
     players->erase(std::find(players->begin(), players->end(), p));
 }
 
-void Table::showPlayers() const
+void Table::logPlayers() const
 {
-    std::cout << "Players:" << std::endl;
+    std::string logMsg = "Players:";
     for (auto p : *players)
     {
-        std::cout << "\t" << p->toString() << std::endl;
+        logMsg += "\n\t" + p->toString();
     }
+    Logger::log(Level::INFO, logMsg.c_str());
 }
 
-void Table::showBets() const
+void Table::logBets() const
 {
-    std::cout << "Bets:" << std::endl;
+    std::string logMsg = "Bets:";
     for (auto b : *bets)
     {
-        std::cout << "\t" << b->toString() << std::endl;
+        logMsg += "\n\t" + b->toString();
     }
+    Logger::log(Level::INFO, logMsg.c_str());
 }
 
 void Table::acceptBets()
@@ -79,21 +88,8 @@ void Table::get_preroll()
     int roll_id = pre_roll_id++;
     // cycle through 3 different rolls
     int id = roll_id % 3;
-    switch (id)
-    {
-        case 1:
-            die1 = 1;
-            die2 = 1;
-            break;
-        case 2:
-            die1 = 3;
-            die2 = 4;
-            break;
-        default:
-            die1 = 6;
-            die2 = 6;
-            break;
-    }
+    die1 = preroll[id].first;
+    die2 = preroll[id].second;
 }
 
 void Table::roll()
@@ -107,18 +103,22 @@ void Table::roll()
         die1 = dis(gen);
         die2 = dis(gen);
     }
-    std::cout << "Rolled " << die1 << " and " << die2 << std::endl;
+    std::string logMsg = "Rolled " + std::to_string(die1) + " and " + std::to_string(die2);
+    Logger::log(Level::INFO, logMsg.c_str());
     adjudicateBets();
     calculateNewPoint();
 }
 
 void Table::adjudicateBets()
 {
-    // showBets();
+    std::string logMsg = "Adjudicating bets";
+    Logger::log(Level::INFO, logMsg.c_str());
     // loop through all bets and adjudicate each one
     for (std::list<Bet *>::iterator it = bets->begin(); it != bets->end();)
     {
         Bet *b = *it; // dereference the iterator to get the pointer to the Bet object
+        std::string logMsg = "Adjudicating bet: " + b->toString();
+        Logger::log(Level::INFO, logMsg.c_str());
         // adjudicate the bet, pay player or table as needed
         bool leaveOnTable = b->adjudicate(die1, die2, point);
         if (!leaveOnTable)
@@ -164,7 +164,7 @@ void Table::calculateNewPoint()
             point = 0;
         }
     }
-    std::cout << "New point is " << point << std::endl;
+    std::string logMsg = "New point is " + point;
 }
 
 void Table::payTable(int amount)

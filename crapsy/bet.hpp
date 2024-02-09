@@ -33,7 +33,7 @@ public:
     bool active;
 
     Bet(Player *p, int amt, BetType type);
-    virtual ~Bet() {};
+    virtual ~Bet();
     virtual std::string toString() const;
     void setTable(Table *t);
     void setStatus(BetStatus s);

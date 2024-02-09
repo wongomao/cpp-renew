@@ -1,17 +1,18 @@
 // player.cpp
 #include <iostream>
 #include <string>
-#include <vector>
+#include <list>
 #include "player.hpp"
 #include "table.hpp"
 #include "bet.hpp"
 #include "logger.hpp"
 
-Player::Player(const std::string& n, int startMoney) :
+Player::Player(const std::string& n, int startMoney, int baseBetAmount) :
     name(n),
-    money(startMoney)
+    money(startMoney),
+    baseBetAmount(baseBetAmount)
 {
-    bets = new std::vector<Bet *>;
+    bets = new std::list<Bet *>;
 }
 
 Player::~Player()
@@ -23,17 +24,24 @@ Player::~Player()
 
 std::string Player::toString() const
 {
-    return getPlayerType() + " player " + name + " has $" + std::to_string(money);
+    std::string playerStr = getPlayerType()
+        + " player " + name
+        + " has $" + std::to_string(money);
+    if (bets->size() > 0)
+    {
+        std::string s = "\n\t Bets:";
+        for (auto b : *bets)
+        {
+            s += "\n\t\t" + b->toString();
+        }
+        playerStr += s;
+    }
+    return playerStr;
 }
 
 void Player::setTable(Table *t)
 {
     table = t;
-}
-
-void Player::makeBets()
-{
-    std::cout << name << " makes bets" << std::endl;
 }
 
 void Player::payPlayer(int amount)
@@ -43,7 +51,8 @@ void Player::payPlayer(int amount)
 
 // =====================================================================================
 
-PassLinePlayer::PassLinePlayer(const std::string& n, int startMoney) : Player(n, startMoney) {}
+PassLinePlayer::PassLinePlayer(const std::string& n, int startMoney, int baseBetAmount)
+    : Player(n, startMoney, baseBetAmount) {}
 
 // PassLinePlayer::~PassLinePlayer()
 // {
@@ -57,18 +66,42 @@ std::string PassLinePlayer::getPlayerType() const
 
 void PassLinePlayer::makeBets()
 {
-    std::cout << "\t" << name << " makes Pass Line bet" << std::endl;
-    std::string msg = name + " makes Pass Line bet";
-    Logger::log(msg.c_str());
-    // create pass line bet and hand to table
-    auto bet = new PassBet(this, 5);
-    table->acceptBet(bet);
-    bets->push_back(bet); // add bet to player's list of bets; not owned by player
+    // pass line player only makes one bet
+
+    // reactivate old bets:
+    //  cycle through all bets to see if any are inactive and reactivate them
+    //  by subtracting bet amount from player's money
+    if (bets->size() > 0)
+    {
+        for (auto b : *bets)
+        {
+            if (!b->getActive())
+            {
+                money -= b->amount; // use same amount
+                b->setActive(true);
+                table->acceptBet(b); // hand to table
+                std::string logMsg = "\t" + name + " reactivates Pass Line bet";
+                Logger::log(Level::INFO, logMsg.c_str());
+            }
+        }
+    }
+    else
+    {
+        // no bets, so make a new one
+        // create pass line bet and hand to table
+        money -= baseBetAmount;
+        auto bet = new PassBet(this, baseBetAmount);
+        table->acceptBet(bet);
+        bets->push_back(bet); // add bet to player's list of bets
+        std::string logMsg = "\t" + name + " makes Pass Line bet of $" + std::to_string(baseBetAmount);
+        Logger::log(Level::INFO, logMsg.c_str());
+    }
 }
 
 // =====================================================================================
 
-FieldPlayer::FieldPlayer(const std::string& n, int startMoney) : Player(n, startMoney) {}
+FieldPlayer::FieldPlayer(const std::string& n, int startMoney, int baseBetAmount) :
+    Player(n, startMoney, baseBetAmount) {}
 
 // FieldPlayer::~FieldPlayer()
 // {
@@ -83,10 +116,34 @@ std::string FieldPlayer::getPlayerType() const
 
 void FieldPlayer::makeBets()
 {
-    std::cout << "\t" << name << " makes Field bet" << std::endl;
-    auto bet = new FieldBet(this, 5);
-    table->acceptBet(bet);
-    bets->push_back(bet); // add bet to player's list of bets
+    std::string msg = name + " makes bets";
+    Logger::log(Level::INFO, msg.c_str());
+    // field player only makes one bet
+    // reactivate old bet if exists
+    if (bets->size() > 0)
+    {
+        for (auto b : *bets)
+        {
+            if (!b->getActive())
+            {
+                money -= b->amount; // use same amount
+                b->setActive(true);
+                table->acceptBet(b); // hand to table
+                std::string logMsg = "\t" + name + " reactivates Field bet";
+                Logger::log(Level::INFO, logMsg.c_str());
+            }
+        }
+    }
+    else
+    {
+        // no bets, so make a new one
+        money -= baseBetAmount;
+        auto bet = new FieldBet(this, baseBetAmount);
+        table->acceptBet(bet); // hand to table
+        bets->push_back(bet); // add bet to player's list of bets
+        std::string logMsg = "\t" + name + " makes Field bet of $" + std::to_string(baseBetAmount);
+        Logger::log(Level::INFO, logMsg.c_str());
+    }
 }
 
 // =====================================================================================
