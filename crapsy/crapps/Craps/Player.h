@@ -14,6 +14,8 @@ public:
 	Table* table;
 	std::list<Bet*>* bets;
 	// player owns the bets
+	bool log_player;
+	int lowest_money, highest_money;
 
 	Player(const std::string&name, int start_money, int base_bet);
 	virtual ~Player();
@@ -22,6 +24,7 @@ public:
 	virtual std::string get_player_type() const = 0;
 	void set_table(Table* t);
 	virtual void make_bets() = 0;
+	void track_money();
 	void pay_player(int amount);
 };
 
