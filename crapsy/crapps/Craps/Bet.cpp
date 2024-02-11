@@ -1,7 +1,6 @@
 #include "Bet.h"
 #include "Player.h"
 #include "Table.h"
-#include "Logger.h"
 
 Bet::Bet(Player* p, int amt)
 	: table(nullptr), player(p), amount(amt), active(true)
@@ -105,11 +104,16 @@ bool FieldBet::adjudicate(int die1, int die2, int point)
 {
     bool leaveOnTable = true;
     int rollValue = die1 + die2;
-    if (rollValue == 2 || rollValue == 12)
+    if (rollValue == 2)
     {
         pay_table(-amount * 2); // subtract amount from table
         pay_player(amount * 2);
     }
+    else if (rollValue == 12)
+    {
+		pay_table(-amount * 3); // subtract amount from table
+		pay_player(amount * 3);
+	}
     else if (rollValue == 3 || rollValue == 4 || rollValue == 9 || rollValue == 10 || rollValue == 11)
     {
         pay_table(-amount); // subtract amount from table

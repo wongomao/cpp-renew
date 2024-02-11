@@ -2,16 +2,20 @@
 #include "Table.h"
 #include "Player.h"
 #include "Bet.h"
-#include "Logger.h"
+#include "easylogging++.h"
+#include "Config.h"
 
 // ====================================================================================================================================================================
-Table::Table() : bank(1000000), gen(rd()), dis(1, 6), die1(0), die2(0), point(0)
+Table::Table(Config config) : config(config),
+	bank(1000000), gen(rd()), dis(1, 6), die1(0), die2(0), point(0)
 {
 	players = new std::list<Player*>();
 	bets = new std::list<Bet*>();
+	log_rolls = config.map["LOG_ROLLS"] == "true";
 	using_preroll = false;
 	preroll = { {1, 1}, {3, 4}, {6, 6} };
 	preroll_id = 0;
+	roll_bucket = std::vector<int>(13, 0); // extra element at indexes 0,1
 }
 
 Table::~Table()
@@ -34,24 +38,75 @@ void Table::add_player(Player* p)
 	p->set_table(this);
 }
 
+void Table::play()
+{
+	int roll_count = 0;
+	int minimum_iterations = std::stoi(config.map["ITERATIONS_MIN"]);
+	bool keep_playing = true;
+	LOG(INFO) << "------ game end -----";
+	while (keep_playing)
+	{
+		accept_bets();
+		roll();
+		adjudicate_bets();
+		calculate_new_point();
+		if (log_rolls)
+		{
+			LOG(INFO) << "roll: " << die1 << "," << die2 << "; point = " << point;
+		}
+
+		roll_count++;
+		if (roll_count >= minimum_iterations)
+		{
+			keep_playing = point != 0;
+		}
+	}
+	LOG(INFO) << "------ game end -----";
+}
+
 void Table::log_players()
 {
-	std::string logMsg = "Players: ";
+	LOG(INFO) << "Players: ";
 	for (auto p : *players)
 	{
-		logMsg += "\n\t" + p->to_string();
+		LOG(INFO) << "\t" << p->to_string();
 	}
-	Logger::log(Level::INFO, logMsg.c_str());
 }
 
 void Table::log_bets()
 {
-	std::string logMsg = "All Table Bets: ";
+	std::string no_bets = bets->empty() ? "none" : "";
+	LOG(INFO) << "All Table Bets: " << no_bets;
 	for (auto b : *bets)
 	{
-		logMsg += "\n\t" + b->to_string();
+		LOG(INFO) << "\t" << b->to_string();
 	}
-	Logger::log(Level::INFO, logMsg.c_str());
+}
+
+void Table::log_bank()
+{
+	std::string logMsg = "Bank: $" + std::to_string(bank);
+	int roll_count = 0;
+	for (int i = 2; i < roll_bucket.size(); i++)
+	{
+		roll_count += roll_bucket[i];
+	}
+	logMsg += "\n" + std::to_string(roll_count) + " Rolls; Distribution:";
+	for (int i = 2; i < roll_bucket.size(); i++)
+	{
+		float percent = (float)roll_bucket[i] / roll_count * 100;
+		int percent_int = (int)percent;
+		std::string asterisks = "";
+		for (int j = 0; j < percent_int; j++)
+		{
+			asterisks += "*";
+		}
+		if (i < 10)
+			logMsg += "\n " + std::to_string(i) + ": " + asterisks;
+		else
+			logMsg += "\n" + std::to_string(i) + ": " + asterisks;
+	}
+	LOG(INFO) << logMsg;
 }
 
 void Table::accept_bets()
@@ -71,8 +126,7 @@ void Table::accept_bet(Bet* b)
 	}
 	else
 	{
-		std::string logMsg = "Table::accept_bet() received a null bet";
-		Logger::log(Level::ERROR, logMsg.c_str());
+		LOG(ERROR) << "Table::accept_bet() received a null bet";
 	}
 }
 
@@ -89,11 +143,7 @@ void Table::roll()
 		die1 = dis(gen);
 		die2 = dis(gen);
 	}
-	std::string logMsg = "roll: " + std::to_string(die1) + ", " + std::to_string(die2);
-	Logger::log(Level::INFO, logMsg.c_str());
-
-	adjudicate_bets();
-	calculate_new_point();
+	roll_bucket[die1 + die2]++;
 }
 
 void Table::adjudicate_bets()
@@ -147,8 +197,11 @@ void Table::calculate_new_point()
 			point = 0;
 		}
 	}
-	std::string logMsg = "point is now " + std::to_string(point);
-	Logger::log(Level::INFO, logMsg.c_str());
+}
+
+int Table::get_point()
+{
+	return point;
 }
 
 void Table::pay_table(int amount)
