@@ -17,10 +17,16 @@ void Config::start_config()
 		LOG(ERROR) << "Unable to open config file " << PATH_TO_CRAPS_CONF;
 		return;
 	}
+	// comments in the conf file begin with a hash
 	std::string line;
-	std::regex re("([a-zA-Z_]+)\\s*=\\s*([a-zA-Z0-9_]+)");
+	std::regex re("([a-zA-Z_]+)\\s*=\\s*([a-zA-Z0-9_\\(\\)\\,]+)");
 	while (std::getline(config_file, line))
 	{
+		// skip comments
+		if (line[0] == '#')
+		{
+			continue;
+		}
 		std::smatch match;
 		if (std::regex_search(line, match, re))
 		{

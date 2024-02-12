@@ -23,7 +23,6 @@ int main()
 	config.start_config();
 
 	Table* table = new Table(config);
-	table->set_using_preroll(false);
 
 	// PassPlayer* pass_player = new PassPlayer("Norman", 1000, 5);
 	OddsPlayer* odds_player = new OddsPlayer("Norman", 1000, 5, 10);

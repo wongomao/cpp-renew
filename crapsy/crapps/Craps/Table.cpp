@@ -1,4 +1,5 @@
 #include <string>
+#include <regex>
 #include "Table.h"
 #include "Player.h"
 #include "Bet.h"
@@ -12,9 +13,7 @@ Table::Table(Config config) : config(config),
 	players = new std::list<Player*>();
 	bets = new std::list<Bet*>();
 	log_rolls = config.map["LOG_ROLLS"] == "true";
-	using_preroll = false;
-	preroll = { {1, 1}, {3, 4}, {6, 6} };
-	preroll_id = 0;
+	set_up_preroll(); // use config to set up preroll
 	roll_bucket = std::vector<int>(13, 0); // extra element at indexes 0,1
 }
 
@@ -27,9 +26,39 @@ Table::~Table()
 }
 // ====================================================================================================================================================================
 
-void Table::set_using_preroll(bool b)
+/// <summary>
+/// Use the config to set up the preroll
+/// </summary>
+void Table::set_up_preroll()
 {
-	using_preroll = b;
+	using_preroll = config.map["USE_PREROLL"] == "true";
+	preroll_id = 0;
+	preroll = { {1, 1}, {3, 4}, {6, 6} }; // default preroll
+	std::string preroll_str = config.map["PREROLL"];
+	if (!preroll_str.empty())
+	{
+		preroll.clear();
+		// preroll_str expected to be in the form of (1,1),(3,4),(6,6)
+		std::regex digit_pair_re("(\\(\\d\\,\\d\\))");
+		std::regex digit_re("\\d");
+		std::smatch pair_match;
+		while (std::regex_search(preroll_str, pair_match, digit_pair_re))
+		{
+			std::string pair_str = pair_match[0].str(); // looks like (1,1)
+			std::smatch digit_match;
+			if (std::regex_search(pair_str, digit_match, digit_re))
+			{
+				int die1 = std::stoi(digit_match[0].str());
+				pair_str = digit_match.suffix().str();
+				if (std::regex_search(pair_str, digit_match, digit_re))
+				{
+					int die2 = std::stoi(digit_match[0].str());
+					preroll.push_back(std::make_pair(die1, die2));
+				}
+			}
+			preroll_str = pair_match.suffix().str();
+		}
+	}
 }
 
 void Table::add_player(Player* p)
@@ -43,7 +72,7 @@ void Table::play()
 	int roll_count = 0;
 	int minimum_iterations = std::stoi(config.map["ITERATIONS_MIN"]);
 	bool keep_playing = true;
-	LOG(INFO) << "------ game end -----";
+	LOG(INFO) << "------ game start -----";
 	while (keep_playing)
 	{
 		accept_bets();
@@ -101,10 +130,7 @@ void Table::log_bank()
 		{
 			asterisks += "*";
 		}
-		if (i < 10)
-			logMsg += "\n " + std::to_string(i) + ": " + asterisks;
-		else
-			logMsg += "\n" + std::to_string(i) + ": " + asterisks;
+		logMsg += (i < 10 ? "\n " : "\n") + std::to_string(i) + ": " + asterisks;
 	}
 	LOG(INFO) << logMsg;
 }

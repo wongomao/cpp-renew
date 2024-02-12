@@ -24,17 +24,18 @@ private:
 	bool using_preroll;
 	std::vector<std::pair<int, int>> preroll;
 	int preroll_id;
-	
+	void set_up_preroll();
+
 	// Table does not own players or bets
 	std::list<Player *> *players;
 	std::list<Bet *> *bets;
 	std::vector<int> roll_bucket; // keep track of rolls for statistics
 	bool log_rolls;
+
 public:
 	// conststructor-destructor
 	Table(Config config);
 	~Table();
-	void set_using_preroll(bool b);
 	void add_player(Player *p);
 	void play();
 	void log_players();
