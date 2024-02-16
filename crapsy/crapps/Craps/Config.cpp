@@ -9,7 +9,7 @@
 
 void Config::start_config()
 {
-	map = std::map<std::string, std::string>();
+	mmap = std::multimap<std::string, std::string>();
 	// map["test"] = "test value";
 	std::ifstream config_file(PATH_TO_CRAPS_CONF);
 	if (!config_file.is_open())
@@ -30,8 +30,26 @@ void Config::start_config()
 		std::smatch match;
 		if (std::regex_search(line, match, re))
 		{
-			map[match[1].str()] = match[2].str();
+			mmap.insert(std::make_pair(match[1].str(), match[2].str()));
 		}
 	}
 	config_file.close();
+	if (get_value("ECHO_ALL_CONFIGURATIONS") == "true")
+	{
+		LOG(INFO) << "Configuration values (" << PATH_TO_CRAPS_CONF << "):";
+		for (auto it = mmap.begin(); it != mmap.end(); ++it)
+		{
+			LOG(INFO) << it->first << " => " << it->second;
+		}
+	}
+}
+
+std::string Config::get_value(const std::string& key)
+{
+	auto search = mmap.find(key);
+	if (search != mmap.end())
+	{
+		return search->second;
+	}
+	return "";
 }

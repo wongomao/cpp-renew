@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <format>
 #include <list>
 
 class Table;
@@ -7,23 +8,28 @@ class Bet;
 
 class Player
 {
+private:
+	int money; // current holdings
 public:
 	std::string name;
-	int money;
+	int start_money;
 	int base_bet;
+	int sum_bets;
+	int sum_wins;
 	Table* table;
 	std::list<Bet*>* bets;
 	// player owns the bets
-	bool log_player;
 	int lowest_money, highest_money;
 
 	Player(const std::string&name, int start_money, int base_bet);
 	virtual ~Player();
 
 	std::string to_string() const;
+	void log_player();
 	virtual std::string get_player_type() const = 0;
 	void set_table(Table* t);
 	virtual void make_bets() = 0;
+	void subtract_bet_amount(int bet_amount);
 	void track_money();
 	void pay_player(int amount);
 };

@@ -5,6 +5,7 @@
 #include "OddsPlayer.h"
 #include "easylogging++.h"
 #include "Config.h"
+#include "PlayerFactory.h"
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -18,28 +19,29 @@ int main()
 	// logger configuration
 	el::Configurations conf(PATH_TO_LOGGER_CONF);
 	el::Loggers::reconfigureLogger("default", conf);
+
 	// craps configuration
 	Config config;
 	config.start_config();
 
 	Table* table = new Table(config);
+	PlayerFactory* player_factory = new PlayerFactory(config);
 
-	// PassPlayer* pass_player = new PassPlayer("Norman", 1000, 5);
-	OddsPlayer* odds_player = new OddsPlayer("Norman", 1000, 5, 10);
-	FieldPlayer* field_player = new FieldPlayer("Tracy", 1000, 5);
+	player_factory->add_config_players_to_table(table);
+	if (table->have_players())
+	{
+		table->play();
 
-	table->add_player(odds_player);
-	table->add_player(field_player);
+		table->log_players();
+		table->log_bets();
+		table->log_bank();
+	}
+	else
+	{
+		LOG(ERROR) << "No players found in config file";
+	}
 
-	table->play();
-
-	table->log_players();
-	table->log_bets();
-	table->log_bank();
-
-	// clean up
-	delete odds_player;
-	delete field_player;
+	delete player_factory; // cleans up players
 	delete table;
 	return 0;
 }

@@ -4,7 +4,8 @@
 
 struct Config
 {
-	std::map<std::string, std::string> map;
+	std::multimap<std::string, std::string> mmap;
 	void start_config();
+	std::string get_value(const std::string& key);
 };
 

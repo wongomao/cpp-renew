@@ -37,6 +37,7 @@ public:
 	Table(Config config);
 	~Table();
 	void add_player(Player *p);
+	bool have_players();
 	void play();
 	void log_players();
 	void log_bets();
@@ -45,6 +46,7 @@ public:
 	void accept_bet(Bet *b);
 	void roll();
 	void adjudicate_bets();
+	void track_player_money();
 	void calculate_new_point();
 	int get_point();
 	void pay_table(int amount);

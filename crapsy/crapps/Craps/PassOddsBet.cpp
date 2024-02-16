@@ -32,7 +32,8 @@ bool PassOddsBet::adjudicate(int die1, int die2, int point)
 		else
 		{
 			// point is set, odds bet is now active
-			pay_player(-odds_amt); // subtract odds from player
+			// subtract odds from player's money
+			player->subtract_bet_amount(odds_amt);
 		}
 	}
 	else

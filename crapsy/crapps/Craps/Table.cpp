@@ -12,7 +12,7 @@ Table::Table(Config config) : config(config),
 {
 	players = new std::list<Player*>();
 	bets = new std::list<Bet*>();
-	log_rolls = config.map["LOG_ROLLS"] == "true";
+	log_rolls = config.get_value("LOG_ROLLS") == "true";
 	set_up_preroll(); // use config to set up preroll
 	roll_bucket = std::vector<int>(13, 0); // extra element at indexes 0,1
 }
@@ -31,10 +31,11 @@ Table::~Table()
 /// </summary>
 void Table::set_up_preroll()
 {
-	using_preroll = config.map["USE_PREROLL"] == "true";
+	using_preroll = config.get_value("USE_PREROLL") == "true";
+
 	preroll_id = 0;
 	preroll = { {1, 1}, {3, 4}, {6, 6} }; // default preroll
-	std::string preroll_str = config.map["PREROLL"];
+	std::string preroll_str = config.get_value("PREROLL");
 	if (!preroll_str.empty())
 	{
 		preroll.clear();
@@ -67,10 +68,19 @@ void Table::add_player(Player* p)
 	p->set_table(this);
 }
 
+bool Table::have_players()
+{
+	return !players->empty();
+}
+
 void Table::play()
 {
 	int roll_count = 0;
-	int minimum_iterations = std::stoi(config.map["ITERATIONS_MIN"]);
+	int minimum_iterations = 0;
+	if (config.get_value("ITERATIONS_MIN") != "")
+	{
+		minimum_iterations = std::stoi(config.get_value("ITERATIONS_MIN"));
+	}
 	bool keep_playing = true;
 	LOG(INFO) << "------ game start -----";
 	while (keep_playing)
@@ -78,6 +88,7 @@ void Table::play()
 		accept_bets();
 		roll();
 		adjudicate_bets();
+		track_player_money();
 		calculate_new_point();
 		if (log_rolls)
 		{
@@ -192,6 +203,15 @@ void Table::adjudicate_bets()
 		}
 	}
 }
+
+void Table::track_player_money()
+{
+	for (auto p : *players)
+	{
+		p->track_money();
+	}
+}
+
 
 // this function is called after the dice are rolled
 // to calculate the point for the next roll

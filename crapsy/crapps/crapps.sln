@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrapsTest", "CrapsTest\Crap
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RegexTest", "RegexTest\RegexTest.vcxproj", "{6B97345B-EFDE-4A7D-9082-8DC6FDB13C5B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoinToss", "CoinToss\CoinToss.vcxproj", "{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{6B97345B-EFDE-4A7D-9082-8DC6FDB13C5B}.Release|x64.Build.0 = Release|x64
 		{6B97345B-EFDE-4A7D-9082-8DC6FDB13C5B}.Release|x86.ActiveCfg = Release|Win32
 		{6B97345B-EFDE-4A7D-9082-8DC6FDB13C5B}.Release|x86.Build.0 = Release|Win32
+		{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}.Debug|x64.ActiveCfg = Debug|x64
+		{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}.Debug|x64.Build.0 = Debug|x64
+		{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}.Debug|x86.ActiveCfg = Debug|Win32
+		{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}.Debug|x86.Build.0 = Debug|Win32
+		{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}.Release|x64.ActiveCfg = Release|x64
+		{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}.Release|x64.Build.0 = Release|x64
+		{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}.Release|x86.ActiveCfg = Release|Win32
+		{D6C7EAA4-D9E9-4848-A72B-8DD5D434DD3E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

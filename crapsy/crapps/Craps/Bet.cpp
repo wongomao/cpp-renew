@@ -102,27 +102,27 @@ std::string FieldBet::to_string() const
 
 bool FieldBet::adjudicate(int die1, int die2, int point)
 {
-    bool leaveOnTable = true;
+    // field bet is a one-roll bet : it is always removed from the table
+    bool leaveOnTable = false;
     int rollValue = die1 + die2;
     if (rollValue == 2)
     {
         pay_table(-amount * 2); // subtract amount from table
-        pay_player(amount * 2);
+        pay_player(amount * 2 + amount); // hand back original + 2x
     }
     else if (rollValue == 12)
     {
 		pay_table(-amount * 3); // subtract amount from table
-		pay_player(amount * 3);
+		pay_player(amount * 3 + amount); // hand back original + 3x
 	}
     else if (rollValue == 3 || rollValue == 4 || rollValue == 9 || rollValue == 10 || rollValue == 11)
     {
         pay_table(-amount); // subtract amount from table
-        pay_player(amount);
+        pay_player(amount + amount); // hand back original + 1x
     }
     else
     {
-        pay_table(amount);
-        leaveOnTable = false; // mark the bet to be removed from the table
+        pay_table(amount); // table wins
     }
     return leaveOnTable;
 }

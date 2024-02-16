@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{803c39dd-6181-4394-a4e1-6688a6dc49a1}</ProjectGuid>
-    <RootNamespace>Craps</RootNamespace>
+    <ProjectGuid>{d6c7eaa4-d9e9-4848-a72b-8dd5d434dd3e}</ProjectGuid>
+    <RootNamespace>CoinToss</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -102,10 +102,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ELPP_NO_DEFAULT_LOG_FILE </PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\dv\cpp\easyloggingpp-9.97.1\src</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,29 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\easyloggingpp-9.97.1\src\easylogging++.cc" />
-    <ClCompile Include="Bet.cpp" />
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="Craps.cpp" />
-    <ClCompile Include="OddsPlayer.cpp" />
-    <ClCompile Include="PassOddsBet.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerFactory.cpp" />
-    <ClCompile Include="Table.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\easyloggingpp-9.97.1\src\easylogging++.h" />
-    <ClInclude Include="Bet.h" />
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="OddsPlayer.h" />
-    <ClInclude Include="PassOddsBet.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerFactory.h" />
-    <ClInclude Include="Table.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="craps.conf" />
-    <None Include="logger.conf" />
+    <ClCompile Include="CoinToss.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
