@@ -29,42 +29,23 @@ Player::~Player()
 
 std::string Player::to_string() const
 {
-	float hi_percent = (float)highest_money / (float)start_money * 100;
-	float lo_percent = (float)lowest_money / (float)start_money * 100;
-	if (lowest_money < 0)
-	{
-		lo_percent -= 100;
-	}
-	std::string rtpStr = "N/A";
-	if (sum_bets != 0)
-	{
-		float rtp = (float)sum_wins / (float)sum_bets * 100;
-		rtpStr = std::to_string(rtp) + "%";
-	}
-	std::string s = get_player_type()
-		+ " player " + name
-		+ " has $" + std::to_string(money)
-		+ " Hi: $" + std::to_string(highest_money) + " (+" + std::to_string(hi_percent) + "%)"
-		+ " Lo: $" + std::to_string(lowest_money) + " (-" + std::to_string(lo_percent) + "%)"
-		+ " Bets: $" + std::to_string(sum_bets)
-		+ " Wins: $" + std::to_string(sum_wins)
-		+ " RTP: " + rtpStr;
-	return s;
+	return name + " has $" + std::to_string(money);
 }
 
 void Player::log_player()
 {
-	float hi_percent = (float)highest_money / (float)start_money * 100;
-	float lo_percent = (float)lowest_money / (float)start_money * 100;
-	std::string hilo = std::vformat("Hi: ${} ({%.1f}%) Lo: ${} ({%.1f}%)",
-		std::make_format_args(highest_money, hi_percent, lowest_money, lo_percent));
-	float rtp = 100 * (float)sum_wins / ((sum_bets != 0) ? (float)sum_bets : 0.000001f);
+	float hi_percent = (float)highest_money / (float)start_money * 100.0f;
+	float lo_percent = (float)lowest_money / (float)start_money * 100.0f;
+	std::string hilo = std::format("Hi: ${} ({:.1f}%) Lo: ${} ({:.1f}%)",
+		highest_money, hi_percent, lowest_money, lo_percent);
+	float rtp = 100.0f * (float)sum_wins / (float)sum_bets;
+	std::string rtpStr = std::format(" RTP: {:.1f}%", rtp);
 	LOG(INFO) << get_player_type() << " player " << name
 		<< " has $" << money
 		<< " " << hilo
 		<< " Bets: $" << sum_bets
 		<< " Wins: $" << sum_wins
-		<< " RTP: " << std::vformat("{%.1f}", std::make_format_args(rtp));
+		<< rtpStr;
 }
 
 void Player::set_table(Table* t)

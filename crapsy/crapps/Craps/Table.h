@@ -48,7 +48,7 @@ public:
 	void adjudicate_bets();
 	void track_player_money();
 	void calculate_new_point();
-	int get_point();
+	int get_point() const;
 	void pay_table(int amount);
 };
 

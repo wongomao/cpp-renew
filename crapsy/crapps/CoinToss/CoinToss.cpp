@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include <random>
+#include <format>
 
 int main()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
-    int iterations = 200000;
+    int iterations = 2000;
 	int bet = 5;
 	int sum_wins = 0;
 	int sum_bets = 0;
@@ -29,10 +30,11 @@ int main()
 			// lost
 		}
 		toss_count++;
-		float win_rate = (float)sum_wins / (float)sum_bets * 100.0;
-		if (toss_count % 1000 == 0)
+		float win_rate = (float)sum_wins / (float)sum_bets * 100.0f;
+		std::string rtpStr = std::format("RTP: {:.1f}", win_rate);
+		if (toss_count % (iterations / 20) == 0)
 		{
-			std::cout << "Toss: " << toss_count << "\tRTP: " << win_rate << std::endl;
+			std::cout << "Toss: " << toss_count << "\tRTP: " << rtpStr << std::endl;
 		}
 	}
 }

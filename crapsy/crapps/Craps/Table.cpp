@@ -109,7 +109,7 @@ void Table::log_players()
 	LOG(INFO) << "Players: ";
 	for (auto p : *players)
 	{
-		LOG(INFO) << "\t" << p->to_string();
+		p->log_player();
 	}
 }
 
@@ -173,14 +173,14 @@ void Table::roll()
 	{
 		die1 = preroll[preroll_id].first;
 		die2 = preroll[preroll_id].second;
-		preroll_id = (preroll_id + 1) % preroll.size();
+		preroll_id = (preroll_id + 1) % (int)preroll.size();
 	}
 	else
 	{
 		die1 = dis(gen);
 		die2 = dis(gen);
 	}
-	roll_bucket[die1 + die2]++;
+	roll_bucket[(size_t)(die1 + die2)]++;
 }
 
 void Table::adjudicate_bets()
@@ -245,7 +245,7 @@ void Table::calculate_new_point()
 	}
 }
 
-int Table::get_point()
+int Table::get_point() const
 {
 	return point;
 }
