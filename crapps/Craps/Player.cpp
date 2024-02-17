@@ -12,7 +12,8 @@ Player::Player(const std::string& name, int start_money, int base_bet)
 	: name(name), start_money(start_money), money(start_money),
 	base_bet(base_bet), sum_bets(0), sum_wins(0),
 	table(nullptr), bets(nullptr),
-	lowest_money(start_money), highest_money(start_money)
+	lowest_money(start_money), highest_money(start_money),
+	first_time_below_zero(false)
 {
 	bets = new std::list<Bet*>;
 }
@@ -53,7 +54,7 @@ void Player::set_table(Table* t)
 	table = t;
 }
 
-void Player::track_money()
+void Player::track_money(int roll_iteration)
 {
 	// keep track of highest and lowest money
 	if (money < lowest_money)
@@ -63,6 +64,14 @@ void Player::track_money()
 	if (money > highest_money)
 	{
 		highest_money = money;
+	}
+	if (money < 0)
+	{
+		if (!first_time_below_zero)
+		{
+			LOG(INFO) << name << " is below zero at roll " << roll_iteration;
+			first_time_below_zero = true;
+		}
 	}
 }
 

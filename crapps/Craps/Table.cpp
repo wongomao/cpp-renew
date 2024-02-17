@@ -88,7 +88,7 @@ void Table::play()
 		accept_bets();
 		roll();
 		adjudicate_bets();
-		track_player_money();
+		track_player_money(roll_count);
 		calculate_new_point();
 		if (log_rolls)
 		{
@@ -204,11 +204,11 @@ void Table::adjudicate_bets()
 	}
 }
 
-void Table::track_player_money()
+void Table::track_player_money(int roll_iteration)
 {
 	for (auto p : *players)
 	{
-		p->track_money();
+		p->track_money(roll_iteration);
 	}
 }
 

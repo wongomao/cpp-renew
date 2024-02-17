@@ -5,7 +5,7 @@
 #include "Config.h"
 #include "easylogging++.h"
 
-#define PATH_TO_CRAPS_CONF "C:\\dv\\cpp\\cpp-renew\\crapsy\\crapps\\Craps\\craps.conf"
+#define PATH_TO_CRAPS_CONF "C:\\dv\\cpp\\cpp-renew\\crapps\\Craps\\craps.conf"
 
 void Config::start_config()
 {

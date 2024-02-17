@@ -10,7 +10,7 @@
 INITIALIZE_EASYLOGGINGPP
 
 #define MIN_ITERATIONS 10
-#define PATH_TO_LOGGER_CONF "C:\\dv\\cpp\\cpp-renew\\crapsy\\crapps\\Craps\\logger.conf"
+#define PATH_TO_LOGGER_CONF "C:\\dv\\cpp\\cpp-renew\\crapps\\Craps\\logger.conf"
 
 
 

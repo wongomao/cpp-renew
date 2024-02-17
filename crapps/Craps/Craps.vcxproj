@@ -129,7 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\easyloggingpp-9.97.1\src\easylogging++.cc" />
+    <ClCompile Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.cc" />
     <ClCompile Include="Bet.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Craps.cpp" />
@@ -140,7 +140,7 @@
     <ClCompile Include="Table.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\easyloggingpp-9.97.1\src\easylogging++.h" />
+    <ClInclude Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.h" />
     <ClInclude Include="Bet.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="OddsPlayer.h" />

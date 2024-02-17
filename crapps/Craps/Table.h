@@ -46,7 +46,7 @@ public:
 	void accept_bet(Bet *b);
 	void roll();
 	void adjudicate_bets();
-	void track_player_money();
+	void track_player_money(int roll_iteration);
 	void calculate_new_point();
 	int get_point() const;
 	void pay_table(int amount);

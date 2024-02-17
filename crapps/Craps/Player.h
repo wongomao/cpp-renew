@@ -10,6 +10,7 @@ class Player
 {
 private:
 	int money; // current holdings
+	bool first_time_below_zero;
 public:
 	std::string name;
 	int start_money;
@@ -30,7 +31,7 @@ public:
 	void set_table(Table* t);
 	virtual void make_bets() = 0;
 	void subtract_bet_amount(int bet_amount);
-	void track_money();
+	void track_money(int roll_iteration);
 	void pay_player(int amount);
 };
 
