@@ -30,25 +30,20 @@ void OddsPlayer::make_bets()
 		{
 			if (!b->get_active())
 			{
-				money -= b->amount; // subtract bet amount from player's money
+				subtract_bet_amount(b->amount); // subtract bet amount from player's money
 				b->set_active(true);
 				table->accept_bet(b); // hand bet to table
-				LOG_IF(log_player, INFO) << "\t" << name << " reactivates Odds bet";
 			}
 		}
 	}
 	else
 	{
-		money -= base_bet;
+		subtract_bet_amount(base_bet); // subtract bet amount from player's money
 		// the odds bet is not yet subtracted from player's money
 		// but will be subtracted when the point is established
 		// during an adjudicate() call
 		auto bet = new PassOddsBet(this, base_bet, odds_bet);
 		table->accept_bet(bet); // add to table's list of bets
 		bets->push_back(bet); // add to my list of bets
-		LOG_IF(log_player, INFO) << "\t" << name
-			<< " makes Pass bet of $" << base_bet
-			<< " and odds bet of $" << odds_bet;
 	}
-	track_money(); // keep track of highest and lowest money
 }

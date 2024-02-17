@@ -1,4 +1,5 @@
 #include <string>
+#include <regex>
 #include "Table.h"
 #include "Player.h"
 #include "Bet.h"
@@ -11,10 +12,8 @@ Table::Table(Config config) : config(config),
 {
 	players = new std::list<Player*>();
 	bets = new std::list<Bet*>();
-	log_rolls = config.map["LOG_ROLLS"] == "true";
-	using_preroll = false;
-	preroll = { {1, 1}, {3, 4}, {6, 6} };
-	preroll_id = 0;
+	log_rolls = config.get_value("LOG_ROLLS") == "true";
+	set_up_preroll(); // use config to set up preroll
 	roll_bucket = std::vector<int>(13, 0); // extra element at indexes 0,1
 }
 
@@ -27,9 +26,40 @@ Table::~Table()
 }
 // ====================================================================================================================================================================
 
-void Table::set_using_preroll(bool b)
+/// <summary>
+/// Use the config to set up the preroll
+/// </summary>
+void Table::set_up_preroll()
 {
-	using_preroll = b;
+	using_preroll = config.get_value("USE_PREROLL") == "true";
+
+	preroll_id = 0;
+	preroll = { {1, 1}, {3, 4}, {6, 6} }; // default preroll
+	std::string preroll_str = config.get_value("PREROLL");
+	if (!preroll_str.empty())
+	{
+		preroll.clear();
+		// preroll_str expected to be in the form of (1,1),(3,4),(6,6)
+		std::regex digit_pair_re("(\\(\\d\\,\\d\\))");
+		std::regex digit_re("\\d");
+		std::smatch pair_match;
+		while (std::regex_search(preroll_str, pair_match, digit_pair_re))
+		{
+			std::string pair_str = pair_match[0].str(); // looks like (1,1)
+			std::smatch digit_match;
+			if (std::regex_search(pair_str, digit_match, digit_re))
+			{
+				int die1 = std::stoi(digit_match[0].str());
+				pair_str = digit_match.suffix().str();
+				if (std::regex_search(pair_str, digit_match, digit_re))
+				{
+					int die2 = std::stoi(digit_match[0].str());
+					preroll.push_back(std::make_pair(die1, die2));
+				}
+			}
+			preroll_str = pair_match.suffix().str();
+		}
+	}
 }
 
 void Table::add_player(Player* p)
@@ -38,17 +68,27 @@ void Table::add_player(Player* p)
 	p->set_table(this);
 }
 
+bool Table::have_players()
+{
+	return !players->empty();
+}
+
 void Table::play()
 {
 	int roll_count = 0;
-	int minimum_iterations = std::stoi(config.map["ITERATIONS_MIN"]);
+	int minimum_iterations = 0;
+	if (config.get_value("ITERATIONS_MIN") != "")
+	{
+		minimum_iterations = std::stoi(config.get_value("ITERATIONS_MIN"));
+	}
 	bool keep_playing = true;
-	LOG(INFO) << "------ game end -----";
+	LOG(INFO) << "------ game start -----";
 	while (keep_playing)
 	{
 		accept_bets();
 		roll();
 		adjudicate_bets();
+		track_player_money(roll_count);
 		calculate_new_point();
 		if (log_rolls)
 		{
@@ -69,7 +109,7 @@ void Table::log_players()
 	LOG(INFO) << "Players: ";
 	for (auto p : *players)
 	{
-		LOG(INFO) << "\t" << p->to_string();
+		p->log_player();
 	}
 }
 
@@ -101,10 +141,7 @@ void Table::log_bank()
 		{
 			asterisks += "*";
 		}
-		if (i < 10)
-			logMsg += "\n " + std::to_string(i) + ": " + asterisks;
-		else
-			logMsg += "\n" + std::to_string(i) + ": " + asterisks;
+		logMsg += (i < 10 ? "\n " : "\n") + std::to_string(i) + ": " + asterisks;
 	}
 	LOG(INFO) << logMsg;
 }
@@ -136,14 +173,14 @@ void Table::roll()
 	{
 		die1 = preroll[preroll_id].first;
 		die2 = preroll[preroll_id].second;
-		preroll_id = (preroll_id + 1) % preroll.size();
+		preroll_id = (preroll_id + 1) % (int)preroll.size();
 	}
 	else
 	{
 		die1 = dis(gen);
 		die2 = dis(gen);
 	}
-	roll_bucket[die1 + die2]++;
+	roll_bucket[(size_t)(die1 + die2)]++;
 }
 
 void Table::adjudicate_bets()
@@ -166,6 +203,15 @@ void Table::adjudicate_bets()
 		}
 	}
 }
+
+void Table::track_player_money(int roll_iteration)
+{
+	for (auto p : *players)
+	{
+		p->track_money(roll_iteration);
+	}
+}
+
 
 // this function is called after the dice are rolled
 // to calculate the point for the next roll
@@ -199,7 +245,7 @@ void Table::calculate_new_point()
 	}
 }
 
-int Table::get_point()
+int Table::get_point() const
 {
 	return point;
 }

@@ -9,8 +9,11 @@ class Table;
 class Bet;
 
 Player::Player(const std::string& name, int start_money, int base_bet)
-	: name(name), money(start_money), base_bet(base_bet), table(nullptr), bets(nullptr),
-	log_player(false), lowest_money(start_money), highest_money(start_money)
+	: name(name), start_money(start_money), money(start_money),
+	base_bet(base_bet), sum_bets(0), sum_wins(0),
+	table(nullptr), bets(nullptr),
+	lowest_money(start_money), highest_money(start_money),
+	first_time_below_zero(false)
 {
 	bets = new std::list<Bet*>;
 }
@@ -27,11 +30,23 @@ Player::~Player()
 
 std::string Player::to_string() const
 {
-	std::string s = get_player_type()
-		+ " player " + name
-		+ " has $" + std::to_string(money)
-		+ " Hi: $" + std::to_string(highest_money) + " Lo: $" + std::to_string(lowest_money);
-	return s;
+	return name + " has $" + std::to_string(money);
+}
+
+void Player::log_player()
+{
+	float hi_percent = (float)highest_money / (float)start_money * 100.0f;
+	float lo_percent = (float)lowest_money / (float)start_money * 100.0f;
+	std::string hilo = std::format("Hi: ${} ({:.1f}%) Lo: ${} ({:.1f}%)",
+		highest_money, hi_percent, lowest_money, lo_percent);
+	float rtp = 100.0f * (float)sum_wins / (float)sum_bets;
+	std::string rtpStr = std::format(" RTP: {:.1f}%", rtp);
+	LOG(INFO) << get_player_type() << " player " << name
+		<< " has $" << money
+		<< " " << hilo
+		<< " Bets: $" << sum_bets
+		<< " Wins: $" << sum_wins
+		<< rtpStr;
 }
 
 void Player::set_table(Table* t)
@@ -39,7 +54,7 @@ void Player::set_table(Table* t)
 	table = t;
 }
 
-void Player::track_money()
+void Player::track_money(int roll_iteration)
 {
 	// keep track of highest and lowest money
 	if (money < lowest_money)
@@ -50,11 +65,26 @@ void Player::track_money()
 	{
 		highest_money = money;
 	}
+	if (money < 0)
+	{
+		if (!first_time_below_zero)
+		{
+			LOG(INFO) << name << " is below zero at roll " << roll_iteration;
+			first_time_below_zero = true;
+		}
+	}
 }
 
 void Player::pay_player(int amount)
 {
+	sum_wins += amount;
 	money += amount;
+}
+
+void Player::subtract_bet_amount(int bet_amount)
+{
+	sum_bets += bet_amount;
+	money -= bet_amount;
 }
 
 // =================================================================
@@ -71,22 +101,20 @@ void PassPlayer::make_bets()
 {
     // pass line player only makes one bet
 
-    // reactivate old bets:
-    //  cycle through all bets to see if any are inactive and reactivate them
-    //  by subtracting bet amount from player's money
     if (bets->size() > 0)
     {
-        for (auto b : *bets)
+		//  cycle through all bets to see if any are inactive and reactivate them
+		for (auto b : *bets)
         {
+			// active bets are left on the table, waiting for point or 7
             if (!b->get_active())
             {
-                money -= b->amount; // use same amount
+				// reactivate old bets:
+				//  by subtracting bet amount from player's money
+				subtract_bet_amount(b->amount); // move money to bet, same amount
                 b->set_active(true);
                 table->accept_bet(b); // hand to table
-				if (log_player)
-				{
-					LOG(INFO) << "\t" << name << " reactivates Pass Line bet";
-				}
+
             }
         }
     }
@@ -94,16 +122,11 @@ void PassPlayer::make_bets()
     {
         // no bets, so make a new one
         // create pass line bet and hand to table
-        money -= base_bet;
+		subtract_bet_amount(base_bet); // move money to bet
         auto bet = new PassBet(this, base_bet);
-        table->accept_bet(bet);
+        table->accept_bet(bet); // hand to table
         bets->push_back(bet); // add bet to player's list of bets
-		if (log_player)
-		{
-			LOG(INFO) << "\t" << name << " makes Pass Line bet of $" << base_bet;
-		}
     }
-	track_money(); // keep track of highest and lowest money
 }
 
 // =================================================================
@@ -125,29 +148,20 @@ void FieldPlayer::make_bets()
 	{
 		for (auto b : *bets)
 		{
-			if (!b->get_active())
-			{
-				money -= b->amount; // use same amount
-				b->set_active(true);
-				table->accept_bet(b); // hand to table
-				if (log_player)
-				{
-					LOG(INFO) << "\t" << name << " reactivates Field bet";
-				}
-			}
+			// there should only be one bet, but just in case
+			// always make sure bet is active for each roll
+			b->set_active(true);
+			// always place new bet from player's money
+			subtract_bet_amount(b->amount); // use same amount
+			table->accept_bet(b); // hand to table
 		}
 	}
 	else
 	{
 		// no bets, so make a new one
-		money -= base_bet;
+		subtract_bet_amount(base_bet); // move money to bet
 		auto bet = new FieldBet(this, base_bet);
 		table->accept_bet(bet);
 		bets->push_back(bet); // add bet to player's list of bets
-		if (log_player)
-		{
-			LOG(INFO) << "\t" << name << " makes Field bet of $" << base_bet;
-		}
 	}
-	track_money(); // keep track of highest and lowest money
 }

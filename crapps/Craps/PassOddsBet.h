@@ -1,5 +1,6 @@
 #pragma once
 #include "Bet.h"
+#include "Player.h"
 class PassOddsBet :
     virtual public Bet
 {

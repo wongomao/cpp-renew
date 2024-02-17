@@ -102,9 +102,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ELPP_NO_DEFAULT_LOG_FILE </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\dv\cpp\easyloggingpp-9.97.1\src</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,22 +129,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\easyloggingpp-9.97.1\src\easylogging++.cc" />
+    <ClCompile Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.cc" />
     <ClCompile Include="Bet.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Craps.cpp" />
     <ClCompile Include="OddsPlayer.cpp" />
     <ClCompile Include="PassOddsBet.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerFactory.cpp" />
     <ClCompile Include="Table.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\easyloggingpp-9.97.1\src\easylogging++.h" />
+    <ClInclude Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.h" />
     <ClInclude Include="Bet.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="OddsPlayer.h" />
     <ClInclude Include="PassOddsBet.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerFactory.h" />
     <ClInclude Include="Table.h" />
   </ItemGroup>
   <ItemGroup>
