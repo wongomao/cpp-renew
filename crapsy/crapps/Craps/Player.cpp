@@ -92,15 +92,16 @@ void PassPlayer::make_bets()
 {
     // pass line player only makes one bet
 
-    // reactivate old bets:
-    //  cycle through all bets to see if any are inactive and reactivate them
-    //  by subtracting bet amount from player's money
     if (bets->size() > 0)
     {
-        for (auto b : *bets)
+		//  cycle through all bets to see if any are inactive and reactivate them
+		for (auto b : *bets)
         {
+			// active bets are left on the table, waiting for point or 7
             if (!b->get_active())
             {
+				// reactivate old bets:
+				//  by subtracting bet amount from player's money
 				subtract_bet_amount(b->amount); // move money to bet, same amount
                 b->set_active(true);
                 table->accept_bet(b); // hand to table
@@ -114,7 +115,7 @@ void PassPlayer::make_bets()
         // create pass line bet and hand to table
 		subtract_bet_amount(base_bet); // move money to bet
         auto bet = new PassBet(this, base_bet);
-        table->accept_bet(bet);
+        table->accept_bet(bet); // hand to table
         bets->push_back(bet); // add bet to player's list of bets
     }
 }
