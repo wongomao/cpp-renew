@@ -217,7 +217,7 @@ void Table::track_player_money(int roll_iteration)
 // to calculate the point for the next roll
 void Table::calculate_new_point()
 {
-	if (point == 0)
+	if (point == 0) // come-out roll
 	{
 		if (die1 + die2 == 7 || die1 + die2 == 11)
 		{
@@ -232,7 +232,7 @@ void Table::calculate_new_point()
 			point = die1 + die2;
 		}
 	}
-	else
+	else // point is set
 	{
 		if (die1 + die2 == 7)
 		{

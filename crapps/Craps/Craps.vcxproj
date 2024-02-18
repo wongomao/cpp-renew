@@ -135,6 +135,8 @@
     <ClCompile Include="Craps.cpp" />
     <ClCompile Include="OddsPlayer.cpp" />
     <ClCompile Include="PassOddsBet.cpp" />
+    <ClCompile Include="PlaceBet.cpp" />
+    <ClCompile Include="PlacePlayer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerFactory.cpp" />
     <ClCompile Include="Table.cpp" />
@@ -145,6 +147,8 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="OddsPlayer.h" />
     <ClInclude Include="PassOddsBet.h" />
+    <ClInclude Include="PlaceBet.h" />
+    <ClInclude Include="PlacePlayer.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerFactory.h" />
     <ClInclude Include="Table.h" />

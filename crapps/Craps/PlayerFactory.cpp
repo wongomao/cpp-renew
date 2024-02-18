@@ -53,6 +53,7 @@ Player* PlayerFactory::create_player(std::string player_str)
 	int start_bank(0);
 	int base_bet(0);
 	int odds_multiplier(0);
+	int place_number(0);
 
 	// split the string by comma
 	std::istringstream ss(player_str);
@@ -80,6 +81,10 @@ Player* PlayerFactory::create_player(std::string player_str)
 		{
 			odds_multiplier = std::stoi(value);
 		}
+		else if (i == 5)
+		{
+			place_number = std::stoi(value);
+		}
 		i++;
 	}
 
@@ -96,6 +101,10 @@ Player* PlayerFactory::create_player(std::string player_str)
 		else if (player_type == "PASS")
 		{
 			return new PassPlayer(player_name, start_bank, base_bet);
+		}
+		else if (player_type == "PLACE")
+		{
+			return new PlacePlayer(player_name, start_bank, base_bet, place_number);
 		}
 	}
 

@@ -42,6 +42,12 @@
     <ClCompile Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlaceBet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlacePlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Table.h">
@@ -66,6 +72,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaceBet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlacePlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

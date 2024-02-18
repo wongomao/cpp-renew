@@ -3,6 +3,7 @@
 #include "Table.h"
 #include "Player.h"
 #include "OddsPlayer.h"
+#include "PlacePlayer.h"
 
 class PlayerFactory
 {
