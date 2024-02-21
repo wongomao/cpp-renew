@@ -83,6 +83,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="logger.conf" />
-    <None Include="craps.conf" />
+    <None Include="craps_config.json" />
   </ItemGroup>
 </Project>

@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ELPP_NO_DEFAULT_LOG_FILE </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\dv\cpp\easyloggingpp-9.97.1\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dv\cpp\nlohmann_json;C:\dv\cpp\easyloggingpp-9.97.1\src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -154,7 +154,7 @@
     <ClInclude Include="Table.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="craps.conf" />
+    <None Include="craps_config.json" />
     <None Include="logger.conf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

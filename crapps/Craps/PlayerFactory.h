@@ -14,6 +14,10 @@ public:
 	PlayerFactory(Config config);
 	~PlayerFactory();
 	void add_config_players_to_table(Table* table);
-	Player* create_player(std::string player_str);
+
+	FieldPlayer* create_field_player(json jplayer);
+	PassPlayer* create_pass_player(json jplayer);
+	OddsPlayer* create_odds_player(json jplayer);
+	PlacePlayer* create_place_player(json jplayer);
 };
 

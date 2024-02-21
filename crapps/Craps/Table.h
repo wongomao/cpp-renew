@@ -31,6 +31,7 @@ private:
 	std::list<Bet *> *bets;
 	std::vector<int> roll_bucket; // keep track of rolls for statistics
 	bool log_rolls;
+	bool log_players_each_roll;
 
 public:
 	// conststructor-destructor

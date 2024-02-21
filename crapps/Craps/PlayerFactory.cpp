@@ -1,6 +1,7 @@
 #include <sstream>
 #include <vector>
 #include "PlayerFactory.h"
+#include "easylogging++.h"
 
 PlayerFactory::PlayerFactory(Config config)
 	: config(config), players(new std::vector<Player *>) {}
@@ -22,14 +23,35 @@ PlayerFactory::~PlayerFactory()
 /// </summary>
 void PlayerFactory::add_config_players_to_table(Table* table)
 {
-	// cycle through config map looking for players
-	for (auto& kv : config.mmap)
+	if (!config.config_obj.contains("PLAYERS"))
 	{
-		if (kv.first == "PLAYER")
+		return;
+	}
+	auto players_obj = config.config_obj["PLAYERS"];
+	if (players_obj.is_array())
+	{
+		for (auto jplayer : players_obj)
 		{
-			if (kv.second != "")
+			if (jplayer.is_object() && jplayer.contains("TYPE"))
 			{
-				Player* p = create_player(kv.second);
+				std::string type = jplayer["TYPE"];
+				Player* p = nullptr;
+				if (type == "FIELD")
+				{
+					p = create_field_player(jplayer);
+				}
+				else if (type == "PASS")
+				{
+					p = create_pass_player(jplayer);
+				}
+				else if (type == "ODDS")
+				{
+					p = create_odds_player(jplayer);
+				}
+				else if (type == "PLACE")
+				{
+					p = create_place_player(jplayer);
+				}
 				if (p != nullptr)
 				{
 					players->push_back(p);
@@ -40,73 +62,88 @@ void PlayerFactory::add_config_players_to_table(Table* table)
 	}
 }
 
-/// <summary>
-/// Given a comma-separated string, create a player object
-/// "player_name,player_type,start_bank,base_bet,odds_multiplier"
-/// </summary>
-/// <param name="player_str"></param>
-/// <returns>pointer to Player object</returns>
-Player* PlayerFactory::create_player(std::string player_str)
+FieldPlayer* PlayerFactory::create_field_player(json jplayer)
 {
-	std::string player_name;
-	std::string player_type;
-	int start_bank(0);
-	int base_bet(0);
-	int odds_multiplier(0);
-	int place_number(0);
-
-	// split the string by comma
-	std::istringstream ss(player_str);
-	std::string value;
-	int i = 0;
-	while (std::getline(ss, value, ','))
+	try
 	{
-		if (i == 0)
-		{
-			player_name = value;
-		}
-		else if (i == 1)
-		{
-			player_type = value;
-		}
-		else if (i == 2)
-		{
-			start_bank = std::stoi(value);
-		}
-		else if (i == 3)
-		{
-			base_bet = std::stoi(value);
-		}
-		else if (i == 4)
-		{
-			odds_multiplier = std::stoi(value);
-		}
-		else if (i == 5)
-		{
-			place_number = std::stoi(value);
-		}
-		i++;
+		std::string name = jplayer["NAME"];
+		int start_bank = jplayer["START_BANK"];
+		int base_bet = jplayer["BASE_BET"];
+		return new FieldPlayer(name, start_bank, base_bet);
 	}
-
-	if (player_name != "" && player_type != "" && base_bet > 0)
+	catch (const std::exception&)
 	{
-		if (player_type == "ODDS")
-		{
-			return new OddsPlayer(player_name, start_bank, base_bet, odds_multiplier * base_bet);
-		}
-		else if (player_type == "FIELD")
-		{
-			return new FieldPlayer(player_name, start_bank, base_bet);
-		}
-		else if (player_type == "PASS")
-		{
-			return new PassPlayer(player_name, start_bank, base_bet);
-		}
-		else if (player_type == "PLACE")
-		{
-			return new PlacePlayer(player_name, start_bank, base_bet, place_number);
-		}
+		LOG(ERROR) << "Error reading configuration file for field player";
 	}
+	return nullptr;
+}
 
+PassPlayer* PlayerFactory::create_pass_player(json jplayer)
+{
+	try
+	{
+		std::string name = jplayer["NAME"];
+		int start_bank = jplayer["START_BANK"];
+		int base_bet = jplayer["BASE_BET"];
+		return new PassPlayer(name, start_bank, base_bet);
+	}
+	catch (const std::exception& e)
+	{
+		LOG(ERROR) << "Error reading configuration file for pass player: " << e.what();
+	}
+	return nullptr;
+}
+
+
+OddsPlayer* PlayerFactory::create_odds_player(json jplayer)
+{
+	try
+	{
+		std::string name = jplayer["NAME"];
+		int start_bank = jplayer["START_BANK"];
+		int base_bet = jplayer["BASE_BET"];
+		int odds_multiplier = jplayer["ODDS_MULTIPLIER"];
+		return new OddsPlayer(name, start_bank, base_bet, base_bet * odds_multiplier);
+	}
+	catch (const std::exception& e)
+	{
+		LOG(ERROR) << "Error reading configuration file for odds player: " << e.what();
+	}
+	return nullptr;
+}
+
+
+PlacePlayer* PlayerFactory::create_place_player(json jplayer)
+{
+	try
+	{
+		std::string name = jplayer["NAME"];
+		int start_bank = jplayer["START_BANK"];
+		auto place_numbers = jplayer["PLACE_NUMBERS"];
+		auto pp = new PlacePlayer(name, start_bank);
+		for (auto n : place_numbers)
+		{
+			int place_number = n.get<int>();
+			int bet_amount = 0;
+			if (place_number == 4 || place_number == 10)
+			{
+				bet_amount = jplayer["BASE410_BET"];
+			}
+			else if (place_number == 5 || place_number == 9)
+			{
+				bet_amount = jplayer["BASE59_BET"];
+			}
+			else if (place_number == 6 || place_number == 8)
+			{
+				bet_amount = jplayer["BASE68_BET"];
+			}
+			pp->add_place_number(place_number, bet_amount);
+		}
+		return pp;
+	}
+	catch (const std::exception&)
+	{
+		LOG(ERROR) << "Error reading configuration file for place player";
+	}
 	return nullptr;
 }

@@ -9,9 +9,8 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-#define MIN_ITERATIONS 10
 #define PATH_TO_LOGGER_CONF "C:\\dv\\cpp\\cpp-renew\\crapps\\Craps\\logger.conf"
-
+#define PATH_TO_CRAPS_CONF "C:\\dv\\cpp\\cpp-renew\\crapps\\Craps\\craps_config.json"
 
 
 int main()
@@ -21,8 +20,7 @@ int main()
 	el::Loggers::reconfigureLogger("default", conf);
 
 	// craps configuration
-	Config config;
-	config.start_config();
+	Config config(PATH_TO_CRAPS_CONF);
 
 	Table* table = new Table(config);
 	PlayerFactory* player_factory = new PlayerFactory(config);

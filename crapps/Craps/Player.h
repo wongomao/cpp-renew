@@ -57,4 +57,4 @@ FieldPlayer(const std::string& name, int start_money, int base_bet);
 
 	virtual std::string get_player_type() const override;
 	void make_bets() override;
-};;
+};
