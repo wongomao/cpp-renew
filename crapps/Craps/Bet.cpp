@@ -3,7 +3,7 @@
 #include "Table.h"
 
 Bet::Bet(Player* p, int amt)
-	: table(nullptr), player(p), amount(amt), active(true)
+	: table(nullptr), player(p), amount(amt), active(true), off_on_come_out(false)
 {
 }
 

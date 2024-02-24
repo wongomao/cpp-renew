@@ -12,6 +12,7 @@ public:
 	Player* player;
 	int amount;
 	bool active;
+	bool off_on_come_out; // most bets are not off on come out
 
 	Bet(Player* p, int amt);
 	virtual ~Bet();

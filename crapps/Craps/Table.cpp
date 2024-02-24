@@ -1,10 +1,8 @@
 #include <string>
-#include <regex>
 #include "Table.h"
 #include "Player.h"
 #include "Bet.h"
 #include "easylogging++.h"
-#include "Config.h"
 
 // ====================================================================================================================================================================
 Table::Table(Config config) : config(config),
@@ -12,7 +10,8 @@ Table::Table(Config config) : config(config),
 {
 	players = new std::list<Player*>();
 	bets = new std::list<Bet*>();
-	log_rolls = config.get_value("LOG_ROLLS") == "true";
+	log_rolls = config.get_bool("LOG_ROLLS");
+	log_players_each_roll = config.get_bool("LOG_PLAYERS_EACH_ROLL");
 	set_up_preroll(); // use config to set up preroll
 	roll_bucket = std::vector<int>(13, 0); // extra element at indexes 0,1
 }
@@ -31,35 +30,26 @@ Table::~Table()
 /// </summary>
 void Table::set_up_preroll()
 {
-	using_preroll = config.get_value("USE_PREROLL") == "true";
+	using_preroll = config.get_bool("USE_PREROLL");
 
 	preroll_id = 0;
 	preroll = { {1, 1}, {3, 4}, {6, 6} }; // default preroll
-	std::string preroll_str = config.get_value("PREROLL");
-	if (!preroll_str.empty())
+	if (!config.config_obj.contains("PREROLL"))
+	{
+		return;
+	}
+	auto preroll_json = config.config_obj["PREROLL"];
+	if (preroll_json.is_array())
 	{
 		preroll.clear();
-		// preroll_str expected to be in the form of (1,1),(3,4),(6,6)
-		std::regex digit_pair_re("(\\(\\d\\,\\d\\))");
-		std::regex digit_re("\\d");
-		std::smatch pair_match;
-		while (std::regex_search(preroll_str, pair_match, digit_pair_re))
+		for (auto p : preroll_json)
 		{
-			std::string pair_str = pair_match[0].str(); // looks like (1,1)
-			std::smatch digit_match;
-			if (std::regex_search(pair_str, digit_match, digit_re))
+			if (p.is_array() && p.size() == 2 && p[0].is_number() && p[1].is_number())
 			{
-				int die1 = std::stoi(digit_match[0].str());
-				pair_str = digit_match.suffix().str();
-				if (std::regex_search(pair_str, digit_match, digit_re))
-				{
-					int die2 = std::stoi(digit_match[0].str());
-					preroll.push_back(std::make_pair(die1, die2));
-				}
+				preroll.push_back({ p[0], p[1] });
 			}
-			preroll_str = pair_match.suffix().str();
 		}
-	}
+	};
 }
 
 void Table::add_player(Player* p)
@@ -76,11 +66,7 @@ bool Table::have_players()
 void Table::play()
 {
 	int roll_count = 0;
-	int minimum_iterations = 0;
-	if (config.get_value("ITERATIONS_MIN") != "")
-	{
-		minimum_iterations = std::stoi(config.get_value("ITERATIONS_MIN"));
-	}
+	int minimum_iterations = config.get_int("ITERATIONS_MIN");
 	bool keep_playing = true;
 	LOG(INFO) << "------ game start -----";
 	while (keep_playing)
@@ -93,6 +79,10 @@ void Table::play()
 		if (log_rolls)
 		{
 			LOG(INFO) << "roll: " << die1 << "," << die2 << "; point = " << point;
+		}
+		if (log_players_each_roll)
+		{
+			log_players();
 		}
 
 		roll_count++;
@@ -167,6 +157,20 @@ void Table::accept_bet(Bet* b)
 	}
 }
 
+void Table::remove_bet(Bet* b)
+{
+	if (b != nullptr)
+	{
+		b->set_active(false);
+		bets->remove(b); // remove the bet from the list
+		// elsewhere, the bet amount will be added to the player's money
+	}
+	else
+	{
+		LOG(ERROR) << "Table::remove_bet() received a null bet";
+	}
+}
+
 void Table::roll()
 {
 	if (using_preroll)
@@ -217,7 +221,7 @@ void Table::track_player_money(int roll_iteration)
 // to calculate the point for the next roll
 void Table::calculate_new_point()
 {
-	if (point == 0)
+	if (point == 0) // come-out roll
 	{
 		if (die1 + die2 == 7 || die1 + die2 == 11)
 		{
@@ -232,7 +236,7 @@ void Table::calculate_new_point()
 			point = die1 + die2;
 		}
 	}
-	else
+	else // point is set
 	{
 		if (die1 + die2 == 7)
 		{

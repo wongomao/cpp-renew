@@ -33,6 +33,7 @@ public:
 	void subtract_bet_amount(int bet_amount);
 	void track_money(int roll_iteration);
 	void pay_player(int amount);
+	virtual void bet_won(Bet* bet, int roll, int point); // not always used
 };
 
 // =================================================================
@@ -57,4 +58,4 @@ FieldPlayer(const std::string& name, int start_money, int base_bet);
 
 	virtual std::string get_player_type() const override;
 	void make_bets() override;
-};;
+};

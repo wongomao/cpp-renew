@@ -1,0 +1,59 @@
+{
+  "ECHO_ALL_CONFIGURATIONS": false,
+  "ITERATIONS_MIN": 5,
+  "LOG_ROLLS": true,
+  "LOG_PLAYERS_EACH_ROLL": true,
+  "USE_PREROLL": true,
+  "PREROLL": [
+    [ 3, 3 ],
+    [ 4, 2 ],
+    [ 3, 5 ],
+    [ 2, 6 ],
+    [ 3, 4 ]
+  ],
+  "PLAYERS": [
+    {
+      "NAME": "Amanda",
+      "TYPE": "PLACE_ACTIVE",
+      "START_BANK": 1000,
+      "BASE68_BET": 6
+    }
+  ],
+  "INACTIVE_PLAYERS": [
+    {
+      "NAME": "Slevin",
+      "TYPE": "PASS",
+      "START_BANK": 1000,
+      "BASE_BET": 5
+    },
+    {
+      "NAME": "Norman",
+      "TYPE": "ODDS",
+      "START_BANK": 1000,
+      "BASE_BET": 5,
+      "ODDS_MULTIPLIER": 2
+    },
+    {
+      "NAME": "Tracykins",
+      "TYPE": "FIELD",
+      "START_BANK": 1000,
+      "BASE_BET": 5
+    },
+    {
+      "NAME": "Norman",
+      "TYPE": "ODDS",
+      "START_BANK": 1000,
+      "BASE_BET": 5,
+      "ODDS_MULTIPLIER": 2
+    },
+    {
+      "NAME": "Jenny",
+      "TYPE": "PLACE",
+      "START_BANK": 1000,
+      "BASE68_BET": 6,
+      "BASE59_BET": 5,
+      "BASE410_BET": 5,
+      "PLACE_NUMBERS": [ 6, 8 ]
+    }
+  ]
+}

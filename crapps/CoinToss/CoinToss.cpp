@@ -2,15 +2,44 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <random>
 #include <format>
+#include "json.hpp" // https://github.com/nlohmann/json/blob/develop/README.md#read-json-from-a-file
+
+using json = nlohmann::json;
 
 int main()
 {
+	try
+	{
+		std::ifstream f("sample.json");
+
+		json data = json::parse(f);
+
+		std::cout << data.dump() << std::endl;
+		std::cout << "The headpiece is: " << data["headpiece"] << std::endl;
+		// without quotes
+		std::cout << "The headpiece is: " << data["headpiece"].get<std::string>() << std::endl;
+		// nonexistent key
+		if (data["headpiece2"].is_null())
+		{
+			std::cout << "headpiece2 is empty" << std::endl;
+		}
+		else
+		{
+			std::cout << "headpiece2 is: " << data["headpiece2"].get<std::string>() << std::endl;
+		}
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "error: " << e.what() << std::endl;
+	}
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
-    int iterations = 2000;
+    int iterations = 20;
 	int bet = 5;
 	int sum_wins = 0;
 	int sum_bets = 0;

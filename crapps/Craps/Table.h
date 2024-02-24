@@ -31,6 +31,7 @@ private:
 	std::list<Bet *> *bets;
 	std::vector<int> roll_bucket; // keep track of rolls for statistics
 	bool log_rolls;
+	bool log_players_each_roll;
 
 public:
 	// conststructor-destructor
@@ -44,6 +45,7 @@ public:
 	void log_bank();
 	void accept_bets();
 	void accept_bet(Bet *b);
+	void remove_bet(Bet *b);
 	void roll();
 	void adjudicate_bets();
 	void track_player_money(int roll_iteration);
