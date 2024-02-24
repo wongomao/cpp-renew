@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "OddsPlayer.h"
 #include "PlacePlayer.h"
+#include "PlaceActivePlayer.h"
 
 class PlayerFactory
 {
@@ -19,5 +20,6 @@ public:
 	PassPlayer* create_pass_player(json jplayer);
 	OddsPlayer* create_odds_player(json jplayer);
 	PlacePlayer* create_place_player(json jplayer);
+	PlaceActivePlayer* create_place_active_player(json jplayer);
 };
 

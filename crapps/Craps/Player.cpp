@@ -81,6 +81,12 @@ void Player::pay_player(int amount)
 	money += amount;
 }
 
+void Player::bet_won(Bet* bet, int roll, int point)
+{
+	// not always used, not guaranteed to be called
+	// useful for some players like place bet players
+}
+
 void Player::subtract_bet_amount(int bet_amount)
 {
 	sum_bets += bet_amount;

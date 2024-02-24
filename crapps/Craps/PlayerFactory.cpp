@@ -52,6 +52,10 @@ void PlayerFactory::add_config_players_to_table(Table* table)
 				{
 					p = create_place_player(jplayer);
 				}
+				else if (type == "PLACE_ACTIVE")
+				{
+					p = create_place_active_player(jplayer);
+				}
 				if (p != nullptr)
 				{
 					players->push_back(p);
@@ -144,6 +148,22 @@ PlacePlayer* PlayerFactory::create_place_player(json jplayer)
 	catch (const std::exception&)
 	{
 		LOG(ERROR) << "Error reading configuration file for place player";
+	}
+	return nullptr;
+}
+
+PlaceActivePlayer* PlayerFactory::create_place_active_player(json jplayer)
+{
+	try
+	{
+		std::string name = jplayer["NAME"];
+		int start_bank = jplayer["START_BANK"];
+		int base_bet = jplayer["BASE68_BET"];
+		return new PlaceActivePlayer(name, start_bank, base_bet);
+	}
+	catch (const std::exception&)
+	{
+		LOG(ERROR) << "Error reading configuration file for place active player";
 	}
 	return nullptr;
 }

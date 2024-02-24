@@ -45,6 +45,7 @@ public:
 	void log_bank();
 	void accept_bets();
 	void accept_bet(Bet *b);
+	void remove_bet(Bet *b);
 	void roll();
 	void adjudicate_bets();
 	void track_player_money(int roll_iteration);

@@ -33,6 +33,7 @@ public:
 	void subtract_bet_amount(int bet_amount);
 	void track_money(int roll_iteration);
 	void pay_player(int amount);
+	virtual void bet_won(Bet* bet, int roll, int point); // not always used
 };
 
 // =================================================================

@@ -10,7 +10,9 @@ std::string PlaceBet::to_string() const
 
 bool PlaceBet::adjudicate(int die1, int die2, int point)
 {
-	bool leaveOnTable = false; // win or lose, do not leave this bet on table
+	// win or lose, do not leave this bet on table
+	// only leave on table if bet was a push or is come-out roll
+	bool leaveOnTable = false;
 	// if place_bet is off_on_come_out, then it is not active on the come out roll
 	if (off_on_come_out && point == 0)
 	{
@@ -27,18 +29,21 @@ bool PlaceBet::adjudicate(int die1, int die2, int point)
 		// player win, pay player 7:6
 		pay_table(-amount * 7 / 6);
 		pay_player(amount * 7 / 6 + amount);
+		tell_player_won(roll, point);
 	}
 	else if (roll == placed_number && (placed_number == 9 || placed_number == 5))
 	{
 		// player win, pay player 7:5
 		pay_table(-amount * 7 / 5);
 		pay_player(amount * 7 / 5 + amount);
+		tell_player_won(roll, point);
 	}
 	else if (roll == placed_number && (placed_number == 4 || placed_number == 10))
 	{
 		// player win, pay player 9:5
 		pay_table(-amount * 9 / 5); // take out of table bank
 		pay_player(amount * 9 / 5 + amount);
+		tell_player_won(roll, point);
 	}
 	else if (roll == 7)
 	{
@@ -47,8 +52,13 @@ bool PlaceBet::adjudicate(int die1, int die2, int point)
 	}
 	else
 	{
-		// leave on table
+		// leave on table as push
 		leaveOnTable = true;
 	}
 	return leaveOnTable;
+}
+
+void PlaceBet::tell_player_won(int roll, int point)
+{
+	player->bet_won(this, roll, point);
 }

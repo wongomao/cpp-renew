@@ -157,6 +157,20 @@ void Table::accept_bet(Bet* b)
 	}
 }
 
+void Table::remove_bet(Bet* b)
+{
+	if (b != nullptr)
+	{
+		b->set_active(false);
+		bets->remove(b); // remove the bet from the list
+		// elsewhere, the bet amount will be added to the player's money
+	}
+	else
+	{
+		LOG(ERROR) << "Table::remove_bet() received a null bet";
+	}
+}
+
 void Table::roll()
 {
 	if (using_preroll)

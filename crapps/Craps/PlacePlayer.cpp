@@ -43,7 +43,6 @@ void PlacePlayer::make_bets()
 	else
 	{
 		// make a new bet
-		subtract_bet_amount(base_bet);
 		for (auto place_number_pair : *place_numbers)
 		{
 			int place_number = place_number_pair.first;
