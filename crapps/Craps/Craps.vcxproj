@@ -133,6 +133,8 @@
     <ClCompile Include="Bet.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Craps.cpp" />
+    <ClCompile Include="HardwayPlayer.cpp" />
+    <ClCompile Include="HardwaysBet.cpp" />
     <ClCompile Include="OddsPlayer.cpp" />
     <ClCompile Include="PassOddsBet.cpp" />
     <ClCompile Include="PlaceActivePlayer.cpp" />
@@ -146,6 +148,8 @@
     <ClInclude Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.h" />
     <ClInclude Include="Bet.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="HardwayPlayer.h" />
+    <ClInclude Include="HardwaysBet.h" />
     <ClInclude Include="OddsPlayer.h" />
     <ClInclude Include="PassOddsBet.h" />
     <ClInclude Include="PlaceActivePlayer.h" />

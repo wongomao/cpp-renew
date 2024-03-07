@@ -56,6 +56,10 @@ void PlayerFactory::add_config_players_to_table(Table* table)
 				{
 					p = create_place_active_player(jplayer);
 				}
+				else if (type == "HARDWAY")
+				{
+					p = create_hardway_player(jplayer);
+				}
 				if (p != nullptr)
 				{
 					players->push_back(p);
@@ -164,6 +168,29 @@ PlaceActivePlayer* PlayerFactory::create_place_active_player(json jplayer)
 	catch (const std::exception&)
 	{
 		LOG(ERROR) << "Error reading configuration file for place active player";
+	}
+	return nullptr;
+}
+
+HardwayPlayer* PlayerFactory::create_hardway_player(json jplayer)
+{
+	try
+	{
+		std::string name = jplayer["NAME"];
+		int start_bank = jplayer["START_BANK"];
+		auto hardway_numbers = jplayer["HARDWAY_NUMBERS"];
+		auto hp = new HardwayPlayer(name, start_bank);
+		for (auto n : hardway_numbers)
+		{
+			int hardway_number = n.get<int>();
+			int bet_amount = jplayer["BASE_BET"];
+			hp->add_hardway_number(hardway_number, bet_amount);
+		}
+		return hp;
+	}
+	catch (const std::exception&)
+	{
+		LOG(ERROR) << "Error reading configuration file for hardway player";
 	}
 	return nullptr;
 }

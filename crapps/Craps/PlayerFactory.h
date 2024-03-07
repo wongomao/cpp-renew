@@ -5,6 +5,7 @@
 #include "OddsPlayer.h"
 #include "PlacePlayer.h"
 #include "PlaceActivePlayer.h"
+#include "HardwayPlayer.h"
 
 class PlayerFactory
 {
@@ -21,5 +22,6 @@ public:
 	OddsPlayer* create_odds_player(json jplayer);
 	PlacePlayer* create_place_player(json jplayer);
 	PlaceActivePlayer* create_place_active_player(json jplayer);
+	HardwayPlayer* create_hardway_player(json jplayer);
 };
 
