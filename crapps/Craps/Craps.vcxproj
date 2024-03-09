@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.cc" />
     <ClCompile Include="Bet.cpp" />
+    <ClCompile Include="ClassicPlayer.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Craps.cpp" />
     <ClCompile Include="HardwayPlayer.cpp" />
@@ -147,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\easyloggingpp-9.97.1\src\easylogging++.h" />
     <ClInclude Include="Bet.h" />
+    <ClInclude Include="ClassicPlayer.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="HardwayPlayer.h" />
     <ClInclude Include="HardwaysBet.h" />

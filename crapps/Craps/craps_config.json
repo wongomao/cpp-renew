@@ -13,11 +13,17 @@
   ],
   "PLAYERS": [
     {
-      "NAME": "Sam",
-      "TYPE": "HARDWAY",
+      "NAME": "Jeremy",
+      "TYPE": "CLASSIC",
       "START_BANK": 1000,
-      "BASE_BET": 2,
-      "HARDWAY_NUMBERS": [ 4, 6, 8, 10 ]
+      "PASS_BET": 5,
+      "ODDS_MULTIPLIER": 2,
+      "PLACE68_BET": 6,
+      "PLACE59_BET": 5,
+      "PLACE410_BET": 5,
+      "HARDWAY_BET": 2,
+      "HARDWAY_NUMBERS": [ 4, 6, 8, 10 ],
+      "PLACE_NUMBERS": [ 4, 5, 6, 8, 9, 10 ]
     }
   ],
   "INACTIVE_PLAYERS": [
@@ -54,6 +60,13 @@
       "TYPE": "PLACE_ACTIVE",
       "START_BANK": 1000,
       "BASE68_BET": 6
+    },
+    {
+      "NAME": "Sam",
+      "TYPE": "HARDWAY",
+      "START_BANK": 1000,
+      "HARDWAY_BET": 2,
+      "HARDWAY_NUMBERS": [ 4, 6, 8, 10 ]
     }
   ]
 }

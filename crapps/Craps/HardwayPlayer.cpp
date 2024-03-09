@@ -43,7 +43,7 @@ void HardwayPlayer::make_bets()
 	}
 	else
 	{
-		// make new bets
+		// make new hardway bets
 		for (auto hardway_number_pair : *hardway_numbers)
 		{
 			int hardway_number = hardway_number_pair.first;
