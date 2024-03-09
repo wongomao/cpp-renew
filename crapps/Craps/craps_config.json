@@ -5,10 +5,10 @@
   "LOG_PLAYERS_EACH_ROLL": true,
   "USE_PREROLL": true,
   "PREROLL": [
-    [ 3, 3 ],
     [ 4, 2 ],
+    [ 3, 3 ],
     [ 3, 5 ],
-    [ 2, 5 ],
+    [ 4, 4 ],
     [ 3, 4 ]
   ],
   "PLAYERS": [
