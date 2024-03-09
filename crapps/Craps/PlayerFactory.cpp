@@ -56,6 +56,14 @@ void PlayerFactory::add_config_players_to_table(Table* table)
 				{
 					p = create_place_active_player(jplayer);
 				}
+				else if (type == "HARDWAY")
+				{
+					p = create_hardway_player(jplayer);
+				}
+				else if (type == "CLASSIC")
+				{
+					p = create_classic_player(jplayer);
+				}
 				if (p != nullptr)
 				{
 					players->push_back(p);
@@ -164,6 +172,79 @@ PlaceActivePlayer* PlayerFactory::create_place_active_player(json jplayer)
 	catch (const std::exception&)
 	{
 		LOG(ERROR) << "Error reading configuration file for place active player";
+	}
+	return nullptr;
+}
+
+HardwayPlayer* PlayerFactory::create_hardway_player(json jplayer)
+{
+	try
+	{
+		std::string name = jplayer["NAME"];
+		int start_bank = jplayer["START_BANK"];
+		auto hardway_numbers = jplayer["HARDWAY_NUMBERS"];
+		auto hp = new HardwayPlayer(name, start_bank);
+		for (auto n : hardway_numbers)
+		{
+			int hardway_number = n.get<int>();
+			int hw_bet_amount = jplayer["HARDWAY_BET"];
+			hp->add_hardway_number(hardway_number, hw_bet_amount);
+		}
+		return hp;
+	}
+	catch (const std::exception&)
+	{
+		LOG(ERROR) << "Error reading configuration file for hardway player";
+	}
+	return nullptr;
+}
+
+ClassicPlayer* PlayerFactory::create_classic_player(json jplayer)
+{
+	try
+	{
+		std::string name = jplayer["NAME"];
+		int start_bank = jplayer["START_BANK"];
+		auto place_numbers = jplayer["PLACE_NUMBERS"];
+		auto hardway_numbers = jplayer["HARDWAY_NUMBERS"];
+		int pass_bet_amount = jplayer["PASS_BET"];
+		int odds_bet_multiplier = jplayer["ODDS_MULTIPLIER"];
+		int hw_bet_amount = jplayer["HARDWAY_BET"];
+		int place410_bet_amount = jplayer["PLACE410_BET"];
+		int place59_bet_amount = jplayer["PLACE59_BET"];
+		int place68_bet_amount = jplayer["PLACE68_BET"];
+
+		auto cp = new ClassicPlayer(name, start_bank);
+		cp->pass_bet_amount = pass_bet_amount;
+		cp->odds_bet_multiplier = odds_bet_multiplier;
+		for (auto n : place_numbers)
+		{
+			int place_number = n.get<int>();
+			int bet_amount = 0;
+			if (place_number == 4 || place_number == 10)
+			{
+				bet_amount = place410_bet_amount;
+			}
+			else if (place_number == 5 || place_number == 9)
+			{
+				bet_amount = place59_bet_amount;
+			}
+			else if (place_number == 6 || place_number == 8)
+			{
+				bet_amount = place68_bet_amount;
+			}
+			cp->add_place_number(place_number, bet_amount);
+		}
+		for (auto n : hardway_numbers)
+		{
+			int hardway_number = n.get<int>();
+			cp->add_hardway_number(hardway_number, hw_bet_amount);
+		}
+		return cp;
+	}
+	catch (const std::exception&)
+	{
+		LOG(ERROR) << "Error reading configuration file for classic player";
 	}
 	return nullptr;
 }
